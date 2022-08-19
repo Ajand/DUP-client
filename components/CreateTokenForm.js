@@ -1,90 +1,43 @@
 /* eslint-disable react/react-in-jsx-scope -- Unaware of jsxImportSource */
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { useState, useEffect } from "react";
-import { TextField, Button, Paper, Container } from "@mui/material";
-import Web3 from "web3";
-import TokenFactory from "../abis/TokenFactory.json";
-import { ethers } from "ethers";
-
-const FACTORY_ADDRESS = "0xeB5Aa8cAB48208d45f870aa0753eE7bf6C471D2A"; //"0x0DB5B2471E83f1D834833475671F41bAfEE341e4";
-const RPC_ENDPOINT = "https://rpc.l16.lukso.network";
+import { useState, useContext } from "react";
+import {
+  TextField,
+  Button,
+  Paper,
+  Container,
+  CircularProgress,
+} from "@mui/material";
+import { DataContext } from "../lib/DataProvider";
+import { useRouter } from "next/router";
 
 const CreateTokenForm = () => {
+  const router = useRouter();
+
   const [tokenName, setTokenName] = useState("");
   const [symbol, setSymbol] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    const main = async () => {};
-
-    main();
-  }, []);
+  const { getUPAddress, getTokenFactory } = useContext(DataContext);
 
   const create = async () => {
     if (!tokenName || !symbol) return;
-
-    const web3 = new Web3(window.ethereum);
-
-    //const accountsRequest =
-    let accounts = await web3.eth.getAccounts();
-    if (!accounts.length) {
-      await web3.eth.requestAccounts();
-      accounts = await web3.eth.getAccounts();
-    }
-
-    const tokenFactory = new web3.eth.Contract(TokenFactory, FACTORY_ADDRESS, {
-      gas: 5_000_000,
-      gasPrice: "1000000000",
-    });
-
-    const tokens = await tokenFactory.methods.getTokens().call();
-
-    console.log(tokens);
-
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-
-    console.log(await provider.getCode(FACTORY_ADDRESS));
-
-    const signer = provider.getSigner();
-    // //
-    // ////
-    // const tFac = new ethers.Contract(FACTORY_ADDRESS, TokenFactory, signer);
-    // //
-    // console.log(await tFac.addToken("123", "adsxzcv"));
-    //console.log(await tFac.getTokens());
-
+    setLoading(true);
+    const upAddress = await getUPAddress();
+    const tokenFactory = getTokenFactory();
     try {
-      const a = await tokenFactory.methods
+      const tx = await tokenFactory.web3.methods
         .addToken(tokenName, symbol)
-        .send({ from: accounts[0] });
-      console.log(a);
-      //.on("receipt", (receipt) => {
-      //  console.log("receipt: ", receipt);
-      //})
-      //.once("sending", (payload) => {
-      //  console.log("payload: ", payload);
-      //});
+        .send({ from: upAddress });
+      const tokenAddresses = await tokenFactory.ethers.getTokens();
+      setLoading(false);
+      router.push(
+        `/token-factory/token/${tokenAddresses[tokenAddresses.length - 1]}`
+      );
     } catch (err) {
-      console.log(err);
+      setLoading(false);
     }
-
-    //tokenFactory.methods
-    //  .addToken(tokenName, symbol)
-    //  .then((r) => console.log(r))
-    //  .catch((err) => console.log(err))
-    //  .send({ from: accounts[0] })
-    //  .on("receipt", (receipt) => {
-    //    console.log("receipt: ", receipt);
-    //  })
-    //  .once("sending", (payload) => {
-    //    console.log("payload: ", payload);
-    //  });
-
-    // Connect to UP
-    // Get the token factory
-    // addToken
-    // w8 for it to mine
-    // go to Token page
   };
 
   return (
@@ -101,20 +54,24 @@ const CreateTokenForm = () => {
         <TextField
           label="Token Name"
           fullWidth
+          variant="filled"
           size="small"
           css={css`
             margin-bottom: 1em;
           `}
+          disabled={loading}
           value={tokenName}
           onChange={(e) => setTokenName(e.target.value)}
         />
         <TextField
           label="Symbol"
+          variant="filled"
           fullWidth
           size="small"
           css={css`
             margin-bottom: 1em;
           `}
+          disabled={loading}
           value={symbol}
           onChange={(e) => setSymbol(e.target.value)}
         />
@@ -123,9 +80,9 @@ const CreateTokenForm = () => {
           onClick={() => {
             create();
           }}
-          disabled={!symbol || !tokenName}
+          disabled={!symbol || !tokenName || loading}
         >
-          Create Token
+          {loading ? <CircularProgress size={22} /> : "Create Token"}
         </Button>
       </Paper>
     </Container>

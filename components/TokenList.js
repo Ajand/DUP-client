@@ -42,7 +42,7 @@ const TokenList = () => {
           margin-bottom: 1em;
         `}
       >
-        <Button onClick={() => router.push('/create-token')} variant="text" color="primary">
+        <Button onClick={() => router.push('/token-factory/create')} variant="text" color="primary">
           Create A Governance Token
         </Button>
       </div>

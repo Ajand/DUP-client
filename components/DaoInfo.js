@@ -1,7 +1,15 @@
 /* eslint-disable react/react-in-jsx-scope -- Unaware of jsxImportSource */
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { Container, Typography, Button, Avatar, Paper } from "@mui/material";
+import {
+  Container,
+  Typography,
+  Button,
+  Avatar,
+  Paper,
+  Grid,
+  Item,
+} from "@mui/material";
 
 import ContractParams from "./ContractParams";
 
@@ -19,6 +27,7 @@ const DAOInfo = () => {
         css={css`
           display: flex;
           justify-content: space-between;
+          margin-bottom: 2em;
         `}
       >
         <div
@@ -48,8 +57,56 @@ const DAOInfo = () => {
           </Button>
         </div>
       </div>
+      <Paper
+        css={css`
+          padding: 1em;
+        `}
+      >
+        <div
+          css={css`
+            display: flex;
+            justify-content: space-between;
+            max-width: 400px;
+            margin: auto;
+          `}
+        >
+          <div
+            css={css`
+              text-align: center;
+            `}
+          >
+            <Typography variant="body2">Proposals</Typography>
+            <Typography variant="body1">1000</Typography>
+          </div>
+          <div
+            css={css`
+              text-align: center;
+              margin-left: 1em;
+            `}
+          >
+            <Typography variant="body2">Holders</Typography>
+            <Typography variant="body1">1000</Typography>
+          </div>
+          <div
+            css={css`
+              text-align: center;
+              margin-left: 1em;
+            `}
+          >
+            <Typography variant="body2">Voters</Typography>
+            <Typography variant="body1">1000</Typography>
+          </div>
+        </div>
+      </Paper>
       <div>
-        <ContractParams />
+        <Grid container >
+          <Grid md={4}>
+            <ContractParams />
+          </Grid>
+          <Grid md={8}>
+            <ContractParams />
+          </Grid>
+        </Grid>
       </div>
     </Container>
   );

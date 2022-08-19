@@ -9,10 +9,9 @@ const ContractParams = () => {
   return (
     <Paper
       css={css`
-        display: inline-block;
         padding: 1em;
-        width: 400px;
         margin-top: 2em;
+        margin-right: 0.5em;
       `}
     >
       <Typography

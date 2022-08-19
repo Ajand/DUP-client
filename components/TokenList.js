@@ -23,7 +23,7 @@ const TokenList = () => {
   const [tokensAddresses, setTokenAddress] = useState([]);
   const [tokensData, setTokensData] = useState(new Map());
   const [loading, setLoading] = useState(false);
-  const { getTokenFactory, web3, provider, erc72Config } =
+  const { getTokenFactory, web3, provider, erc725Config } =
     useContext(DataContext);
 
   useEffect(() => {
@@ -47,7 +47,7 @@ const TokenList = () => {
             [LSP4DigitalAsset[0], LSP4DigitalAsset[1], LSP4DigitalAsset[2]],
             tokenAddress,
             provider,
-            erc72Config
+            erc725Config
           );
 
           return token.fetchData();

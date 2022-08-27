@@ -12,12 +12,12 @@ import {
   TextField,
 } from "@mui/material";
 
+import SetupUPForm from "./SetupUPForm";
+
 const steps = [
   {
     label: "Setup your DAO Universal Profile",
-    description: `For each ad campaign that you create, you can control how much
-              you're willing to spend on clicks and conversions, which networks
-              and geographical locations you want your ads to show on, and more.`,
+    component: SetupUPForm,
   },
   {
     label: "Setup Governance Token",
@@ -74,34 +74,7 @@ export default function VerticalLinearStepper({ activeStep, setActiveStep }) {
             >
               {step.label}
             </StepLabel>
-            <StepContent>
-              <TextField
-                variant="outlined"
-                label="name"
-                size="small"
-                fullWidth
-              />
-
-              <Typography>{step.description}</Typography>
-              <Box sx={{ mb: 2 }}>
-                <div>
-                  <Button
-                    variant="contained"
-                    onClick={handleNext}
-                    sx={{ mt: 1, mr: 1 }}
-                  >
-                    {index === steps.length - 1 ? "Finish" : "Continue"}
-                  </Button>
-                  <Button
-                    disabled={index === 0}
-                    onClick={handleBack}
-                    sx={{ mt: 1, mr: 1 }}
-                  >
-                    Back
-                  </Button>
-                </div>
-              </Box>
-            </StepContent>
+            <StepContent>{<step.component />}</StepContent>
           </Step>
         ))}
       </Stepper>

@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 
 import SetupUPForm from "./SetupUPForm";
+import SetupGovernanceToken from "./SetupGovernanceToken";
 
 const steps = [
   {
@@ -21,8 +22,7 @@ const steps = [
   },
   {
     label: "Setup Governance Token",
-    description:
-      "An ad group contains one or more ads which target a shared set of keywords.",
+    component: SetupGovernanceToken,
   },
   {
     label: "Setup Governor",

@@ -28,6 +28,7 @@ const SetupUPForm = () => {
       <TextField
         css={css`
           margin-bottom: 0.75em;
+          border-radius: 20px;
         `}
         multiline
         variant="outlined"

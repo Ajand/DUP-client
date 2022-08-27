@@ -33,9 +33,11 @@ const darkTheme = createTheme({
         root: { borderRadius: 8 },
       },
     },
-    MuiDialog: {
-
-    }
+    MuiInputBase: {
+      styleOverrides: {
+        root: { borderRadius: "8px !important" },
+      },
+    },
   },
 });
 

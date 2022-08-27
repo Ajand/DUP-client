@@ -54,7 +54,7 @@ const CreateTokenForm = () => {
         <TextField
           label="Token Name"
           fullWidth
-          variant="filled"
+          variant="outlined"
           size="small"
           css={css`
             margin-bottom: 1em;
@@ -65,7 +65,7 @@ const CreateTokenForm = () => {
         />
         <TextField
           label="Symbol"
-          variant="filled"
+          variant="outlined"
           fullWidth
           size="small"
           css={css`

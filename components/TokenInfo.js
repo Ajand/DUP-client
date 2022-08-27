@@ -153,14 +153,14 @@ const TokenInfo = () => {
           `}
         >
           <TextField
-            variant="filled"
+            variant="outlined"
             label="Amount to transfer"
             fullWidth
             value={transferAmount}
             onChange={(e) => setTransferAmount(e.target.value)}
           />
           <TextField
-            variant="filled"
+            variant="outlined"
             label="Transfer To"
             fullWidth
             value={transferTo}

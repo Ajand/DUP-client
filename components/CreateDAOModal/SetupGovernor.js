@@ -4,7 +4,7 @@ import { css } from "@emotion/react";
 import { useState } from "react";
 import { TextField, Button, Typography, Checkbox } from "@mui/material";
 
-const SetupGovernanceToken = () => {
+const SetupUPForm = () => {
   const [alreadyDeployed, setAlreadyDeployed] = useState(false);
 
   return (
@@ -15,8 +15,8 @@ const SetupGovernanceToken = () => {
           margin-bottom: 0.75em;
         `}
       >
-        Each DAO needs a governance token that can be use to vote for different
-        proposals, change contracts and manage treasuries.
+        The brain of a DAO is the governor contract. It will be responsible for
+        creating purposals and voting.
       </Typography>
       <div
         css={css`
@@ -34,7 +34,7 @@ const SetupGovernanceToken = () => {
           `}
           variant="body2"
         >
-          Already have a deployed governance token.
+          Already have a deployed governor.
         </Typography>
       </div>
       {alreadyDeployed ? (
@@ -42,28 +42,36 @@ const SetupGovernanceToken = () => {
           <TextField
             multiline
             variant="outlined"
-            label="Governance Token Address"
+            label="Governor Address"
             size="small"
             fullWidth
-            helperText="Token must support ILSP7Votes interface."
+            helperText="Contract must support Governor interface."
           />
         </>
       ) : (
         <>
-          {" "}
           <TextField
             css={css`
               margin-bottom: 0.75em;
             `}
             variant="outlined"
-            label="Supply Amount"
+            label="Voting Delay"
+            size="small"
+            fullWidth
+          />
+          <TextField
+            css={css`
+              margin-bottom: 0.75em;
+            `}
+            variant="outlined"
+            label="Voting Period"
             size="small"
             fullWidth
           />
           <TextField
             multiline
             variant="outlined"
-            label="Receiver"
+            label="Quorum Numerator"
             size="small"
             fullWidth
           />
@@ -73,4 +81,4 @@ const SetupGovernanceToken = () => {
   );
 };
 
-export default SetupGovernanceToken;
+export default SetupUPForm;

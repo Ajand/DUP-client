@@ -9,23 +9,34 @@ const darkTheme = createTheme({
   palette: {
     mode: "dark",
     primary: {
-      main: "#666CFF",
+      main: "#ECB365",
     },
-
+    secondary: {
+      main: "#65ecb4",
+    },
     background: {
-      default: "#282a42",
-      paper: "#30334e"
+      default: "#041C32",
+      paper: "#04293A",
     },
   },
   components: {
     MuiPaper: {
       styleOverrides: {
         root: {
-          borderRadius: 10
-        }
-      }
+          borderRadius: 10,
+          boxShadow: "rgb(20 21 33 / 18%) 0px 2px 10px 0px",
+        },
+      },
+    },
+    MuiButton: {
+      styleOverrides: {
+        root: { borderRadius: 8 },
+      },
+    },
+    MuiDialog: {
+
     }
-  }
+  },
 });
 
 function MyApp({ Component, pageProps }) {

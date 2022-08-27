@@ -1,12 +1,17 @@
 /* eslint-disable react/react-in-jsx-scope -- Unaware of jsxImportSource */
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
+import { useState } from "react";
 import { Container, Typography, useTheme, Button } from "@mui/material";
 import { useRouter } from "next/router";
+
+import CreateDAOModal from "./CreateDAOModal";
 
 const Hero = () => {
   const theme = useTheme();
   const router = useRouter();
+
+  const [createDAODialogOpen, setCreateDAODialogOpen] = useState(false);
 
   return (
     <Container
@@ -30,7 +35,13 @@ const Hero = () => {
           margin-top: 2em;
         `}
       >
-        <Button variant="contained" color="primary">
+        <Button
+          onClick={() => {
+            setCreateDAODialogOpen(true);
+          }}
+          variant="contained"
+          color="primary"
+        >
           Start A DAO
         </Button>
         <Button
@@ -46,6 +57,10 @@ const Hero = () => {
           Create A Governance Token
         </Button>
       </div>
+      <CreateDAOModal
+        open={createDAODialogOpen}
+        setOpen={setCreateDAODialogOpen}
+      />
     </Container>
   );
 };

@@ -1,7 +1,7 @@
 /* eslint-disable react/react-in-jsx-scope -- Unaware of jsxImportSource */
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { useState } from "react";
+import { useState, useEffect, useContext } from "react";
 import {
   DialogTitle,
   DialogContentText,
@@ -11,11 +11,15 @@ import {
   TextField,
   Button,
 } from "@mui/material";
+import { ethers } from "ethers";
+import { DataContext } from "../../lib/DataProvider";
 
 import DAOCreationStepper from "./DAOCreationStepper";
 
 const CreateDAOModal = ({ open, setOpen }) => {
   const [activeStep, setActiveStep] = useState(0);
+
+  const [isContinueDisabled, setIsContinueDisabled] = useState(false);
 
   const [daoInfo, setDAOInfo] = useState({
     up: {
@@ -36,15 +40,50 @@ const CreateDAOModal = ({ open, setOpen }) => {
     setOpen(false);
   };
 
-  const isDisabled = () => {
-    switch (activeStep) {
-      case 0:
-        if (!daoInfo.up.name) return true;
-        break;
-    }
+  const { erc725Config, getToken } = useContext(DataContext);
 
-    return false;
-  };
+  useEffect(() => {
+    const main = async () => {
+      setIsContinueDisabled(true);
+      let result = false;
+      switch (activeStep) {
+        case 0:
+          if (!daoInfo.up.name) result = true;
+          break;
+        case 1:
+          if (daoInfo.governanceToken.deployed) {
+            if (!ethers.utils.isAddress(daoInfo.governanceToken.deployed)) {
+              result = true;
+            } else {
+              const tokenApi = getToken(daoInfo.governanceToken.deployed);
+              try {
+                const isTokenVotes = await tokenApi.ethers.getVotes(
+                  ethers.constants.AddressZero
+                );
+                console.log(isTokenVotes);
+              } catch (err) {
+                result = true;
+              }
+            }
+          } else {
+            if (
+              !daoInfo.governanceToken.supply ||
+              !daoInfo.governanceToken.receiver ||
+              !ethers.utils.isAddress(daoInfo.governanceToken.receiver) ||
+              isNaN(daoInfo.governanceToken.supply)
+            )
+              result = true;
+          }
+          break;
+      }
+
+      console.log(result);
+
+      setIsContinueDisabled(result);
+    };
+
+    main();
+  }, [activeStep, daoInfo]);
 
   return (
     <>
@@ -74,7 +113,7 @@ const CreateDAOModal = ({ open, setOpen }) => {
             onClick={() => setActiveStep(activeStep + 1)}
             size="small"
             variant="contained"
-            disabled={isDisabled()}
+            disabled={isContinueDisabled}
           >
             Continue
           </Button>

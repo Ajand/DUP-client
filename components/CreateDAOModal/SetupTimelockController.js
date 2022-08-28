@@ -40,7 +40,6 @@ const SetupTimelockController = () => {
       {alreadyDeployed ? (
         <>
           <TextField
-            multiline
             variant="outlined"
             label="Timelock Controller Address"
             size="small"

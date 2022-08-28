@@ -40,7 +40,6 @@ const Confirmation = () => {
       {alreadyDeployed ? (
         <>
           <TextField
-            multiline
             variant="outlined"
             label="Governor Address"
             size="small"
@@ -69,7 +68,6 @@ const Confirmation = () => {
             fullWidth
           />
           <TextField
-            multiline
             variant="outlined"
             label="Quorum Numerator"
             size="small"

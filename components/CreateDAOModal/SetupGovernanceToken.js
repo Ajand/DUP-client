@@ -69,7 +69,6 @@ const SetupGovernanceToken = ({ daoInfo, setDAOInfo }) => {
           ) : (
             <>
               <TextField
-                multiline
                 variant="outlined"
                 label="Receiver"
                 size="small"
@@ -125,7 +124,6 @@ const SetupGovernanceToken = ({ daoInfo, setDAOInfo }) => {
           ) : (
             <>
               <TextField
-                multiline
                 variant="outlined"
                 label="Receiver"
                 size="small"

@@ -17,7 +17,7 @@ import { DataContext } from "../../lib/DataProvider";
 import DAOCreationStepper from "./DAOCreationStepper";
 
 const CreateDAOModal = ({ open, setOpen }) => {
-  const [activeStep, setActiveStep] = useState(0);
+  const [activeStep, setActiveStep] = useState(2);
 
   const [isContinueDisabled, setIsContinueDisabled] = useState(false);
 
@@ -33,6 +33,12 @@ const CreateDAOModal = ({ open, setOpen }) => {
       supply: "",
       receiver: "",
       deployed: "",
+    },
+    governor: {
+      votingDelay: "",
+      votingPeriod: "",
+      quorumNumerator: "",
+      delpyed: "",
     },
   });
 
@@ -60,7 +66,6 @@ const CreateDAOModal = ({ open, setOpen }) => {
                 const isTokenVotes = await tokenApi.ethers.getVotes(
                   ethers.constants.AddressZero
                 );
-                console.log(isTokenVotes);
               } catch (err) {
                 result = true;
               }
@@ -76,8 +81,6 @@ const CreateDAOModal = ({ open, setOpen }) => {
           }
           break;
       }
-
-      console.log(result);
 
       setIsContinueDisabled(result);
     };

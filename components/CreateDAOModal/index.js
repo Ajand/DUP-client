@@ -18,6 +18,13 @@ const CreateDAOModal = ({ open, setOpen }) => {
   const [activeStep, setActiveStep] = useState(0);
 
   const [daoInfo, setDAOInfo] = useState({
+    up: {
+      name: "",
+      description: "",
+      avatar: null,
+      cover: null,
+      categories: [],
+    },
     governanceToken: {
       supply: "",
       receiver: "",

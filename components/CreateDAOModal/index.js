@@ -36,6 +36,16 @@ const CreateDAOModal = ({ open, setOpen }) => {
     setOpen(false);
   };
 
+  const isDisabled = () => {
+    switch (activeStep) {
+      case 0:
+        if (!daoInfo.up.name) return true;
+        break;
+    }
+
+    return false;
+  };
+
   return (
     <>
       <Dialog open={open} onClose={handleClose}>
@@ -64,6 +74,7 @@ const CreateDAOModal = ({ open, setOpen }) => {
             onClick={() => setActiveStep(activeStep + 1)}
             size="small"
             variant="contained"
+            disabled={isDisabled()}
           >
             Continue
           </Button>

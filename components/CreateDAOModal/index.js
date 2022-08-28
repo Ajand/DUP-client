@@ -38,7 +38,7 @@ const CreateDAOModal = ({ open, setOpen }) => {
       votingDelay: "",
       votingPeriod: "",
       quorumNumerator: "",
-      delpyed: "",
+      deployed: "",
     },
   });
 
@@ -46,7 +46,7 @@ const CreateDAOModal = ({ open, setOpen }) => {
     setOpen(false);
   };
 
-  const { erc725Config, getToken } = useContext(DataContext);
+  const { erc725Config, getToken, getGovernor } = useContext(DataContext);
 
   useEffect(() => {
     const main = async () => {
@@ -76,6 +76,29 @@ const CreateDAOModal = ({ open, setOpen }) => {
               !daoInfo.governanceToken.receiver ||
               !ethers.utils.isAddress(daoInfo.governanceToken.receiver) ||
               isNaN(daoInfo.governanceToken.supply)
+            )
+              result = true;
+          }
+        case 2:
+          if (daoInfo.governor.deployed) {
+            if (!ethers.utils.isAddress(daoInfo.governor.deployed)) {
+              result = true;
+            } else {
+              const governorApi = getGovernor(daoInfo.governor.deployed);
+              try {
+                const isGovernor = await governorApi.ethers.votingDelay();
+              } catch (err) {
+                result = true;
+              }
+            }
+          } else {
+            if (
+              !daoInfo.governor.votingDelay ||
+              !daoInfo.governor.votingPeriod ||
+              !daoInfo.governor.quorumNumerator ||
+              isNaN(daoInfo.governor.votingDelay) ||
+              isNaN(daoInfo.governor.votingPeriod) ||
+              isNaN(daoInfo.governor.quorumNumerator)
             )
               result = true;
           }

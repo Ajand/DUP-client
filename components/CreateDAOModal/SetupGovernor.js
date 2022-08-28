@@ -21,7 +21,7 @@ const SetupUPForm = ({ daoInfo, setDAOInfo }) => {
     setField("votingDelay", "");
     setField("votingPeriod", "");
     setField("quorumNumerator", "");
-    setField("delpyed", "");
+    setField("deployed", "");
   }, [alreadyDeployed]);
 
   return (
@@ -94,6 +94,14 @@ const SetupUPForm = ({ daoInfo, setDAOInfo }) => {
             label="Voting Delay"
             size="small"
             fullWidth
+            onChange={(e) => setField("votingDelay", e.target.value)}
+            value={daoInfo.governor.votingDelay}
+            error={isNaN(daoInfo.governor.votingDelay)}
+            helperText={
+              isNaN(daoInfo.governor.votingDelay)
+                ? "Voting delay must be a number."
+                : ""
+            }
           />
           <TextField
             css={css`
@@ -103,12 +111,28 @@ const SetupUPForm = ({ daoInfo, setDAOInfo }) => {
             label="Voting Period"
             size="small"
             fullWidth
+            onChange={(e) => setField("votingPeriod", e.target.value)}
+            value={daoInfo.governor.votingPeriod}
+            error={isNaN(daoInfo.governor.votingPeriod)}
+            helperText={
+              isNaN(daoInfo.governor.votingPeriod)
+                ? "Voting period must be a number."
+                : ""
+            }
           />
           <TextField
             variant="outlined"
             label="Quorum Numerator"
             size="small"
             fullWidth
+            onChange={(e) => setField("quorumNumerator", e.target.value)}
+            value={daoInfo.governor.quorumNumerator}
+            error={isNaN(daoInfo.governor.quorumNumerator)}
+            helperText={
+              isNaN(daoInfo.governor.quorumNumerator)
+                ? "Voting period must be a number."
+                : ""
+            }
           />
         </>
       )}

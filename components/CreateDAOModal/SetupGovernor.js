@@ -1,11 +1,28 @@
 /* eslint-disable react/react-in-jsx-scope -- Unaware of jsxImportSource */
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { TextField, Button, Typography, Checkbox } from "@mui/material";
+import GovernorResolver from "../GovernorResolver";
+import { ethers } from "ethers";
 
-const SetupUPForm = () => {
-  const [alreadyDeployed, setAlreadyDeployed] = useState(false);
+//0x9cfcDa91BA405606cAb1eDb936c9f27005Eed990
+
+const SetupUPForm = ({ daoInfo, setDAOInfo }) => {
+  const [alreadyDeployed, setAlreadyDeployed] = useState(true);
+
+  const setField = (fieldName, value) => {
+    const ndi = { ...daoInfo };
+    ndi.governor[fieldName] = value;
+    setDAOInfo(ndi);
+  };
+
+  useEffect(() => {
+    setField("votingDelay", "");
+    setField("votingPeriod", "");
+    setField("quorumNumerator", "");
+    setField("delpyed", "");
+  }, [alreadyDeployed]);
 
   return (
     <div>
@@ -39,14 +56,33 @@ const SetupUPForm = () => {
       </div>
       {alreadyDeployed ? (
         <>
-          <TextField
-            multiline
-            variant="outlined"
-            label="Governor Address"
-            size="small"
-            fullWidth
-            helperText="Contract must support Governor interface."
-          />
+          {ethers.utils.isAddress(daoInfo.governor.deployed) ? (
+            <>
+              <GovernorResolver
+                address={ethers.utils.getAddress(daoInfo.governor.deployed)}
+                onClose={() => {
+                  setField("deployed", "");
+                }}
+                label="Governance Token:"
+              />
+            </>
+          ) : (
+            <>
+              <TextField
+                variant="outlined"
+                label="Governor Address"
+                size="small"
+                fullWidth
+                onChange={(e) => setField("deployed", e.target.value)}
+                value={daoInfo.governor.deployed}
+                error={
+                  daoInfo.governor.deployed &&
+                  !ethers.utils.isAddress(daoInfo.governor.deployed)
+                }
+                helperText="Contract must support Governor interface."
+              />
+            </>
+          )}
         </>
       ) : (
         <>
@@ -69,7 +105,6 @@ const SetupUPForm = () => {
             fullWidth
           />
           <TextField
-            multiline
             variant="outlined"
             label="Quorum Numerator"
             size="small"

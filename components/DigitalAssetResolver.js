@@ -6,22 +6,27 @@ import { Avatar, Typography, IconButton, useTheme } from "@mui/material";
 import { Close } from "@mui/icons-material";
 import { DataContext } from "../lib/DataProvider";
 import { ERC725 } from "@erc725/erc725.js";
-import LSP3 from "@erc725/erc725.js/schemas/LSP3UniversalProfileMetadata.json";
+import LSP4DigitalAsset from "@erc725/erc725.js/schemas/LSP4DigitalAsset.json";
 import { formatAddress, convertIPFS } from "../lib/utils";
 
-const UPResolver = ({ address, onClose, label }) => {
+const DigitalAssetResolver = ({ address, onClose, label }) => {
   const theme = useTheme();
 
   const [loading, setLoading] = useState(true);
-  const [up, setUp] = useState(false);
+  const [asset, setAsset] = useState();
 
   const { erc725Config, provider } = useContext(DataContext);
 
   useEffect(() => {
     const main = async () => {
       try {
-        const erc725 = new ERC725(LSP3, address, provider, erc725Config);
-        setUp((await erc725.fetchData("LSP3Profile")).value.LSP3Profile);
+        const erc725 = new ERC725(
+          [LSP4DigitalAsset[1], LSP4DigitalAsset[2]],
+          address,
+          provider,
+          erc725Config
+        );
+        setAsset(await erc725.fetchData());
         setLoading(false);
       } catch (err) {
         setLoading(false);
@@ -47,7 +52,7 @@ const UPResolver = ({ address, onClose, label }) => {
               Resolving {formatAddress(address)}
             </Typography>
           </>
-        ) : up ? (
+        ) : asset ? (
           <>
             {" "}
             <div
@@ -57,24 +62,12 @@ const UPResolver = ({ address, onClose, label }) => {
             >
               <div
                 css={css`
-                  border: 2px solid ${theme.palette.text.primary};
-                  padding: 2px;
-                  display: inline-block;
-                  border-radius: 100px;
-                `}
-              >
-                <Avatar
-                  src={convertIPFS(
-                    up.profileImage[up.profileImage.length - 1].url
-                  )}
-                />
-              </div>
-              <div
-                css={css`
                   margin-left: 0.5em;
                 `}
               >
-                <Typography variant="body1">{up.name}</Typography>
+                <Typography variant="body1">
+                  {asset[0].value} - ${asset[1].value}
+                </Typography>
                 <Typography variant="body2">
                   {formatAddress(address)}
                 </Typography>
@@ -89,7 +82,7 @@ const UPResolver = ({ address, onClose, label }) => {
                 color: ${theme.palette.error.main};
               `}
             >
-              The address {formatAddress(address)} is not a universal profile.
+              The address {formatAddress(address)} is not an LSP4 Digital asset.
             </Typography>
           </>
         )}
@@ -107,4 +100,4 @@ const UPResolver = ({ address, onClose, label }) => {
   );
 };
 
-export default UPResolver;
+export default DigitalAssetResolver;

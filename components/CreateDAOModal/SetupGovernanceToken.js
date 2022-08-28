@@ -4,7 +4,7 @@ import { css } from "@emotion/react";
 import { useState } from "react";
 import { TextField, Button, Typography, Checkbox } from "@mui/material";
 import { ethers } from "ethers";
-import UPResolver from "../UPResolver";
+import DigitalAssetResolver from "../DigitalAssetResolver";
 
 const SetupGovernanceToken = ({ daoInfo, setDAOInfo }) => {
   const [alreadyDeployed, setAlreadyDeployed] = useState(false);
@@ -47,16 +47,41 @@ const SetupGovernanceToken = ({ daoInfo, setDAOInfo }) => {
       </div>
       {alreadyDeployed ? (
         <>
-          <TextField
-            multiline
-            variant="outlined"
-            label="Governance Token Address"
-            size="small"
-            fullWidth
-            helperText="Token must support ILSP7Votes interface."
-            onChange={(e) => setField("deployed", e.target.value)}
-            value={daoInfo.governanceToken.deployed}
-          />
+          {ethers.utils.isAddress(daoInfo.governanceToken.deployed) ? (
+            <>
+              <DigitalAssetResolver
+                address={ethers.utils.getAddress(
+                  daoInfo.governanceToken.deployed
+                )}
+                onClose={() => {
+                  setField("deployed", "");
+                }}
+                label="Governance Token Address:"
+              />
+            </>
+          ) : (
+            <>
+              <TextField
+                multiline
+                variant="outlined"
+                label="Receiver"
+                size="small"
+                fullWidth
+                onChange={(e) => setField("deployed", e.target.value)}
+                value={daoInfo.governanceToken.deployed}
+                error={
+                  daoInfo.governanceToken.deployed &&
+                  !ethers.utils.isAddress(daoInfo.governanceToken.deployed)
+                }
+                helperText={
+                  daoInfo.governanceToken.deployed &&
+                  !ethers.utils.isAddress(daoInfo.governanceToken.deployed)
+                    ? "Token address must be an address."
+                    : "Token must support ILSP7Votes interface."
+                }
+              />
+            </>
+          )}
         </>
       ) : (
         <>

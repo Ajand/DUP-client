@@ -52,7 +52,7 @@ const DigitalAssetResolver = ({ address, onClose, label }) => {
               Resolving {formatAddress(address)}
             </Typography>
           </>
-        ) : asset ? (
+        ) : asset && asset[0].value ? (
           <>
             {" "}
             <div

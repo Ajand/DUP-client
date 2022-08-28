@@ -1,10 +1,11 @@
 /* eslint-disable react/react-in-jsx-scope -- Unaware of jsxImportSource */
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { TextField, Button, Typography, Checkbox } from "@mui/material";
 import { ethers } from "ethers";
 import DigitalAssetResolver from "../DigitalAssetResolver";
+import UPResolver from "../UPResolver";
 
 const SetupGovernanceToken = ({ daoInfo, setDAOInfo }) => {
   const [alreadyDeployed, setAlreadyDeployed] = useState(false);
@@ -14,6 +15,12 @@ const SetupGovernanceToken = ({ daoInfo, setDAOInfo }) => {
     ndi.governanceToken[fieldName] = value;
     setDAOInfo(ndi);
   };
+
+  useEffect(() => {
+    setField("supply", "");
+    setField("receiver", "");
+    setField("deployed", "");
+  }, [alreadyDeployed]);
 
   return (
     <div>

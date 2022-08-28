@@ -17,6 +17,14 @@ import DAOCreationStepper from "./DAOCreationStepper";
 const CreateDAOModal = ({ open, setOpen }) => {
   const [activeStep, setActiveStep] = useState(0);
 
+  const [daoInfo, setDAOInfo] = useState({
+    governanceToken: {
+      supply: "",
+      receiver: "",
+      deployed: "",
+    },
+  });
+
   const handleClose = () => {
     setOpen(false);
   };
@@ -29,6 +37,8 @@ const CreateDAOModal = ({ open, setOpen }) => {
           <DAOCreationStepper
             activeStep={activeStep}
             setActiveStep={setActiveStep}
+            setDAOInfo={setDAOInfo}
+            daoInfo={daoInfo}
           />
         </DialogContent>
         <DialogActions

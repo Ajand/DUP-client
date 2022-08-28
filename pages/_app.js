@@ -18,6 +18,9 @@ const darkTheme = createTheme({
       default: "#041C32",
       paper: "#04293A",
     },
+    error: {
+      main: "#FF5E5B",
+    },
   },
   components: {
     MuiPaper: {

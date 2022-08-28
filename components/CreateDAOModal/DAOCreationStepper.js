@@ -1,5 +1,4 @@
 import * as React from "react";
-
 import {
   Box,
   Stepper,
@@ -11,11 +10,11 @@ import {
   Button,
   TextField,
 } from "@mui/material";
-
 import SetupUPForm from "./SetupUPForm";
 import SetupGovernanceToken from "./SetupGovernanceToken";
 import SetupGovernor from "./SetupGovernor";
 import SetupTimelockController from "./SetupTimelockController";
+import Confirmation from "./Confirmation";
 
 const steps = [
   {
@@ -36,14 +35,16 @@ const steps = [
   },
   {
     label: "Confirmation and Deploy",
-    description: `Try out different ad text to see what brings in the most customers,
-              and learn how to enhance your ads using features like ad extensions.
-              If you run into any problems with your ads, find out how to tell if
-              they're running and how to resolve approval issues.`,
+    component: Confirmation,
   },
 ];
 
-export default function VerticalLinearStepper({ activeStep, setActiveStep }) {
+export default function VerticalLinearStepper({
+  activeStep,
+  setActiveStep,
+  daoInfo,
+  setDAOInfo,
+}) {
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
@@ -70,7 +71,9 @@ export default function VerticalLinearStepper({ activeStep, setActiveStep }) {
             >
               {step.label}
             </StepLabel>
-            <StepContent>{<step.component />}</StepContent>
+            <StepContent>
+              {<step.component daoInfo={daoInfo} setDAOInfo={setDAOInfo} />}
+            </StepContent>
           </Step>
         ))}
       </Stepper>

@@ -3,8 +3,11 @@
 import { css } from "@emotion/react";
 import { useState, useEffect } from "react";
 import { TextField, Button, Typography, Checkbox } from "@mui/material";
+import TimelockResolver from "../TimelockResolver";
 import UPResolver from "../UPResolver";
 import { ethers } from "ethers";
+
+//0x24F3D0801e59B9Ea82bAB027c77821408547cEBE
 
 const SetupTimelockController = ({ daoInfo, setDAOInfo }) => {
   const [alreadyDeployed, setAlreadyDeployed] = useState(false);
@@ -53,13 +56,38 @@ const SetupTimelockController = ({ daoInfo, setDAOInfo }) => {
       </div>
       {alreadyDeployed ? (
         <>
-          <TextField
-            variant="outlined"
-            label="Timelock Controller Address"
-            size="small"
-            fullWidth
-            helperText="Contract must be a timelock controller."
-          />
+          {ethers.utils.isAddress(daoInfo.timelock.deployed) ? (
+            <>
+              <TimelockResolver
+                address={ethers.utils.getAddress(daoInfo.timelock.deployed)}
+                onClose={() => {
+                  setField("deployed", "");
+                }}
+                label="Timelock Controlerr:"
+              />
+            </>
+          ) : (
+            <TextField
+              css={css`
+                margin-bottom: 0.75em;
+              `}
+              variant="outlined"
+              label="Timelock Controller Address"
+              size="small"
+              fullWidth
+              onChange={(e) => setField("deployed", e.target.value)}
+              value={daoInfo.timelock.deployed}
+              error={
+                daoInfo.timelock.deployed &&
+                !ethers.utils.isAddress(daoInfo.timelock.deployed)
+              }
+              helperText={
+                daoInfo.timelock.deployed &&
+                !ethers.utils.isAddress(daoInfo.timelock.deployed) &&
+                "Contract must be a timelock controller."
+              }
+            />
+          )}
         </>
       ) : (
         <>

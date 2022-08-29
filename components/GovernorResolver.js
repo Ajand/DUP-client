@@ -7,7 +7,7 @@ import { Close } from "@mui/icons-material";
 import { DataContext } from "../lib/DataProvider";
 import { formatAddress, convertIPFS } from "../lib/utils";
 
-const GovernorResolver = ({ address, onClose, label }) => {
+const GovernorResolver = ({ address, onClose, label, noMargin, fullAddress }) => {
   const theme = useTheme();
 
   const [loading, setLoading] = useState(true);
@@ -44,7 +44,7 @@ const GovernorResolver = ({ address, onClose, label }) => {
       >
         {loading ? (
           <>
-            <Typography variant="body1">
+            <Typography variant="body2">
               Resolving {formatAddress(address)}
             </Typography>
           </>
@@ -58,7 +58,7 @@ const GovernorResolver = ({ address, onClose, label }) => {
             >
               <div
                 css={css`
-                  margin-left: 0.5em;
+                  margin-left: ${noMargin ? "0px" : "0.5em"};
                 `}
               >
                 <div>
@@ -66,7 +66,7 @@ const GovernorResolver = ({ address, onClose, label }) => {
                     css={css`
                       margin-bottom: 0.25em;
                     `}
-                    variant="body1"
+                    variant="body2"
                   >
                     Voting Delay: {String(governor.votingDelay)}
                   </Typography>
@@ -74,7 +74,7 @@ const GovernorResolver = ({ address, onClose, label }) => {
                     css={css`
                       margin-bottom: 0.25em;
                     `}
-                    variant="body1"
+                    variant="body2"
                   >
                     Voting Period: {String(governor.votingPeriod)}
                   </Typography>
@@ -82,13 +82,13 @@ const GovernorResolver = ({ address, onClose, label }) => {
                     css={css`
                       margin-bottom: 0.25em;
                     `}
-                    variant="body1"
+                    variant="body2"
                   >
                     Quorum Numerator: {String(governor.quorumNumerator)}
                   </Typography>
                 </div>
                 <Typography variant="body2">
-                  {formatAddress(address)}
+                  {fullAddress ? address : formatAddress(address)}
                 </Typography>
               </div>
             </div>
@@ -96,7 +96,7 @@ const GovernorResolver = ({ address, onClose, label }) => {
         ) : (
           <>
             <Typography
-              variant="body1"
+              variant="body2"
               css={css`
                 color: ${theme.palette.error.main};
               `}
@@ -105,15 +105,16 @@ const GovernorResolver = ({ address, onClose, label }) => {
             </Typography>
           </>
         )}
-
-        <IconButton
-          size="small"
-          onClick={() => {
-            onClose();
-          }}
-        >
-          <Close />
-        </IconButton>
+        {onClose && (
+          <IconButton
+            size="small"
+            onClick={() => {
+              onClose();
+            }}
+          >
+            <Close />
+          </IconButton>
+        )}
       </div>
     </div>
   );

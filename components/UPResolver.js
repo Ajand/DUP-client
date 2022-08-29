@@ -9,7 +9,7 @@ import { ERC725 } from "@erc725/erc725.js";
 import LSP3 from "@erc725/erc725.js/schemas/LSP3UniversalProfileMetadata.json";
 import { formatAddress, convertIPFS } from "../lib/utils";
 
-const UPResolver = ({ address, onClose, label }) => {
+const UPResolver = ({ address, onClose, label, fullAddress, noMargin }) => {
   const theme = useTheme();
 
   const [loading, setLoading] = useState(true);
@@ -71,12 +71,12 @@ const UPResolver = ({ address, onClose, label }) => {
               </div>
               <div
                 css={css`
-                  margin-left: 0.5em;
+                  margin-left: ${noMargin ? "0px" : "0.5em"};
                 `}
               >
                 <Typography variant="body1">{up.name}</Typography>
                 <Typography variant="body2">
-                  {formatAddress(address)}
+                  {fullAddress ? address : formatAddress(address)}
                 </Typography>
               </div>
             </div>
@@ -94,14 +94,16 @@ const UPResolver = ({ address, onClose, label }) => {
           </>
         )}
 
-        <IconButton
-          size="small"
-          onClick={() => {
-            onClose();
-          }}
-        >
-          <Close />
-        </IconButton>
+        {onClose && (
+          <IconButton
+            size="small"
+            onClick={() => {
+              onClose();
+            }}
+          >
+            <Close />
+          </IconButton>
+        )}
       </div>
     </div>
   );

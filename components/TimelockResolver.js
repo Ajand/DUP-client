@@ -9,7 +9,13 @@ import { formatAddress, convertIPFS } from "../lib/utils";
 import moment from "moment";
 import { formatDate } from "../lib/utils";
 
-const TimelockResolver = ({ address, onClose, label }) => {
+const TimelockResolver = ({
+  address,
+  onClose,
+  label,
+  fullAddress,
+  noMargin,
+}) => {
   const theme = useTheme();
 
   const [loading, setLoading] = useState(true);
@@ -44,7 +50,7 @@ const TimelockResolver = ({ address, onClose, label }) => {
       >
         {loading ? (
           <>
-            <Typography variant="body1">
+            <Typography variant="body2">
               Resolving {formatAddress(address)}
             </Typography>
           </>
@@ -58,7 +64,7 @@ const TimelockResolver = ({ address, onClose, label }) => {
             >
               <div
                 css={css`
-                  margin-left: 0.5em;
+                  margin-left: ${noMargin ? "0px" : "0.5em"};
                 `}
               >
                 <div>
@@ -66,14 +72,14 @@ const TimelockResolver = ({ address, onClose, label }) => {
                     css={css`
                       margin-bottom: 0.25em;
                     `}
-                    variant="body1"
+                    variant="body2"
                   >
                     Minimum Delay:{" "}
                     {formatDate(String(timelockController.minimumDelay))}
                   </Typography>
                 </div>
                 <Typography variant="body2">
-                  {formatAddress(address)}
+                  {fullAddress ? address : formatAddress(address)}
                 </Typography>
               </div>
             </div>
@@ -81,7 +87,7 @@ const TimelockResolver = ({ address, onClose, label }) => {
         ) : (
           <>
             <Typography
-              variant="body1"
+              variant="body2"
               css={css`
                 color: ${theme.palette.error.main};
               `}
@@ -91,14 +97,16 @@ const TimelockResolver = ({ address, onClose, label }) => {
           </>
         )}
 
-        <IconButton
-          size="small"
-          onClick={() => {
-            onClose();
-          }}
-        >
-          <Close />
-        </IconButton>
+        {onClose && (
+          <IconButton
+            size="small"
+            onClick={() => {
+              onClose();
+            }}
+          >
+            <Close />
+          </IconButton>
+        )}
       </div>
     </div>
   );

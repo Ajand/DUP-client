@@ -17,32 +17,37 @@ import { DataContext } from "../../lib/DataProvider";
 import DAOCreationStepper from "./DAOCreationStepper";
 
 const CreateDAOModal = ({ open, setOpen }) => {
-  const [activeStep, setActiveStep] = useState(3);
+  const [activeStep, setActiveStep] = useState(4);
 
   const [isContinueDisabled, setIsContinueDisabled] = useState(false);
 
   const [daoInfo, setDAOInfo] = useState({
     up: {
-      name: "",
-      description: "",
-      avatar: null,
-      cover: null,
+      name: "Unigrants DAO",
+      description:
+        "In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content. Lorem ipsum may be used as a placeholder before final copy is available. It is also used to temporarily replace text in a process called greeking, which allows designers to consider the form of a webpage or publication, without the meaning of the text influencing the design",
+      avatar: "https://www.unigrants.org/assets/logo.37911101.png",
+      cover:
+        "https://images.unsplash.com/photo-1528465424850-54d22f092f9d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
       categories: [],
     },
     governanceToken: {
-      supply: "",
-      receiver: "",
-      deployed: "",
+      name: "Sample Governance Token",
+      symbol: "SGT",
+      supply: "60",
+      receiver: "0x5cd86aaC1D5450163fdD4DE3e51896Aa39D52CAe",
+      deployed: "0x77bac3FD15566537CB05486EEeb44bFc437d41a2",
     },
     governor: {
-      votingDelay: "",
-      votingPeriod: "",
-      quorumNumerator: "",
-      deployed: "",
+      votingDelay: "20",
+      votingPeriod: "50",
+      quorumNumerator: "80",
+      deployed: "0x9cfcDa91BA405606cAb1eDb936c9f27005Eed990",
     },
     timelock: {
-      minimumDelay: "",
-      executor: "",
+      minimumDelay: "50",
+      executor: "0x5cd86aaC1D5450163fdD4DE3e51896Aa39D52CAe",
+      deployed: "",
     },
   });
 

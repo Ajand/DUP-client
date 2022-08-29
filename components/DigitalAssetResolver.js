@@ -9,7 +9,7 @@ import { ERC725 } from "@erc725/erc725.js";
 import LSP4DigitalAsset from "@erc725/erc725.js/schemas/LSP4DigitalAsset.json";
 import { formatAddress, convertIPFS } from "../lib/utils";
 
-const DigitalAssetResolver = ({ address, onClose, label }) => {
+const DigitalAssetResolver = ({ address, onClose, label, noMargin, fullAddress }) => {
   const theme = useTheme();
 
   const [loading, setLoading] = useState(true);
@@ -62,14 +62,14 @@ const DigitalAssetResolver = ({ address, onClose, label }) => {
             >
               <div
                 css={css`
-                  margin-left: 0.5em;
+                  margin-left: ${noMargin ? "0px" : "0.5em"};
                 `}
               >
-                <Typography variant="body1">
+                <Typography variant="body2">
                   {asset[0].value} - ${asset[1].value}
                 </Typography>
                 <Typography variant="body2">
-                  {formatAddress(address)}
+                {fullAddress ? address : formatAddress(address)}
                 </Typography>
               </div>
             </div>
@@ -87,14 +87,16 @@ const DigitalAssetResolver = ({ address, onClose, label }) => {
           </>
         )}
 
-        <IconButton
-          size="small"
-          onClick={() => {
-            onClose();
-          }}
-        >
-          <Close />
-        </IconButton>
+        {onClose && (
+          <IconButton
+            size="small"
+            onClick={() => {
+              onClose();
+            }}
+          >
+            <Close />
+          </IconButton>
+        )}
       </div>
     </div>
   );

@@ -17,7 +17,7 @@ import { DataContext } from "../../lib/DataProvider";
 import DAOCreationStepper from "./DAOCreationStepper";
 
 const CreateDAOModal = ({ open, setOpen }) => {
-  const [activeStep, setActiveStep] = useState(2);
+  const [activeStep, setActiveStep] = useState(3);
 
   const [isContinueDisabled, setIsContinueDisabled] = useState(false);
 
@@ -39,6 +39,10 @@ const CreateDAOModal = ({ open, setOpen }) => {
       votingPeriod: "",
       quorumNumerator: "",
       deployed: "",
+    },
+    timelock: {
+      minimumDelay: "",
+      executor: "",
     },
   });
 
@@ -99,6 +103,22 @@ const CreateDAOModal = ({ open, setOpen }) => {
               isNaN(daoInfo.governor.votingDelay) ||
               isNaN(daoInfo.governor.votingPeriod) ||
               isNaN(daoInfo.governor.quorumNumerator)
+            )
+              result = true;
+          }
+          break;
+        case 3:
+          if (daoInfo.governor.deployed) {
+            if (!ethers.utils.isAddress(daoInfo.timelock.deployed)) {
+              // TODO!! This must be a timelock
+              result = true;
+            }
+          } else {
+            if (
+              !daoInfo.timelock.minimumDelay ||
+              !daoInfo.timelock.executor ||
+              isNaN(daoInfo.timelock.minimumDelay) ||
+              !ethers.utils.isAddress(daoInfo.timelock.executor)
             )
               result = true;
           }

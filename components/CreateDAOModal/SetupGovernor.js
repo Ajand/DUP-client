@@ -9,7 +9,7 @@ import { ethers } from "ethers";
 //0x9cfcDa91BA405606cAb1eDb936c9f27005Eed990
 
 const SetupUPForm = ({ daoInfo, setDAOInfo }) => {
-  const [alreadyDeployed, setAlreadyDeployed] = useState(true);
+  const [alreadyDeployed, setAlreadyDeployed] = useState(false);
 
   const setField = (fieldName, value) => {
     const ndi = { ...daoInfo };

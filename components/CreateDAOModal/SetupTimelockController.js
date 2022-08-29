@@ -1,11 +1,25 @@
 /* eslint-disable react/react-in-jsx-scope -- Unaware of jsxImportSource */
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { TextField, Button, Typography, Checkbox } from "@mui/material";
+import UPResolver from "../UPResolver";
+import { ethers } from "ethers";
 
-const SetupTimelockController = () => {
+const SetupTimelockController = ({ daoInfo, setDAOInfo }) => {
   const [alreadyDeployed, setAlreadyDeployed] = useState(false);
+
+  const setField = (fieldName, value) => {
+    const ndi = { ...daoInfo };
+    ndi.timelock[fieldName] = value;
+    setDAOInfo(ndi);
+  };
+
+  useEffect(() => {
+    setField("minimumDelay", "");
+    setField("executor", "");
+    setField("deployed", "");
+  }, [alreadyDeployed]);
 
   return (
     <div>
@@ -57,17 +71,52 @@ const SetupTimelockController = () => {
             label="Minimum Delay"
             size="small"
             fullWidth
+            onChange={(e) => setField("minimumDelay", e.target.value)}
+            value={daoInfo.timelock.minimumDelay}
+            error={isNaN(daoInfo.timelock.minimumDelay)}
+            helperText={
+              isNaN(daoInfo.timelock.minimumDelay)
+                ? "Minimum delay must be a number."
+                : ""
+            }
           />
-          <TextField
-            css={css`
-              margin-bottom: 0.75em;
-            `}
-            variant="outlined"
-            label="Executor"
-            size="small"
-            fullWidth
-            helperText="This is the account that can execute successful purposals. It's better to be a multisig."
-          />
+          <>
+            {ethers.utils.isAddress(daoInfo.timelock.executor) ? (
+              <>
+                <UPResolver
+                  address={ethers.utils.getAddress(daoInfo.timelock.executor)}
+                  onClose={() => {
+                    setField("executor", "");
+                  }}
+                  label="Executor:"
+                />
+              </>
+            ) : (
+              <TextField
+                css={css`
+                  margin-bottom: 0.75em;
+                `}
+                variant="outlined"
+                label="Executor"
+                size="small"
+                fullWidth
+                onChange={(e) => setField("executor", e.target.value)}
+                value={daoInfo.timelock.executor}
+                error={
+                  daoInfo.timelock.executor &&
+                  !ethers.utils.isAddress(daoInfo.timelock.executor)
+                }
+                helperText={
+                  !(
+                    daoInfo.timelock.executor &&
+                    !ethers.utils.isAddress(daoInfo.timelock.executor)
+                  )
+                    ? "This is the account that can execute successful purposals. It's better to be a multisig."
+                    : "Executor must be a proper address"
+                }
+              />
+            )}
+          </>
         </>
       )}
     </div>

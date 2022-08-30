@@ -19,8 +19,6 @@ const SetupTimelockController = ({ daoInfo, setDAOInfo }) => {
   };
 
   useEffect(() => {
-    setField("minimumDelay", "");
-    setField("executor", "");
     setField("deployed", "");
   }, [alreadyDeployed]);
 
@@ -78,8 +76,10 @@ const SetupTimelockController = ({ daoInfo, setDAOInfo }) => {
               onChange={(e) => setField("deployed", e.target.value)}
               value={daoInfo.timelock.deployed}
               error={
-                daoInfo.timelock.deployed &&
-                !ethers.utils.isAddress(daoInfo.timelock.deployed)
+                !!(
+                  daoInfo.timelock.deployed &&
+                  !ethers.utils.isAddress(daoInfo.timelock.deployed)
+                )
               }
               helperText={
                 daoInfo.timelock.deployed &&
@@ -101,7 +101,7 @@ const SetupTimelockController = ({ daoInfo, setDAOInfo }) => {
             fullWidth
             onChange={(e) => setField("minimumDelay", e.target.value)}
             value={daoInfo.timelock.minimumDelay}
-            error={isNaN(daoInfo.timelock.minimumDelay)}
+            error={!!isNaN(daoInfo.timelock.minimumDelay)}
             helperText={
               isNaN(daoInfo.timelock.minimumDelay)
                 ? "Minimum delay must be a number."
@@ -131,8 +131,10 @@ const SetupTimelockController = ({ daoInfo, setDAOInfo }) => {
                 onChange={(e) => setField("executor", e.target.value)}
                 value={daoInfo.timelock.executor}
                 error={
-                  daoInfo.timelock.executor &&
-                  !ethers.utils.isAddress(daoInfo.timelock.executor)
+                  !!(
+                    daoInfo.timelock.executor &&
+                    !ethers.utils.isAddress(daoInfo.timelock.executor)
+                  )
                 }
                 helperText={
                   !(

@@ -17,20 +17,8 @@ const SetupGovernanceToken = ({ daoInfo, setDAOInfo }) => {
   };
 
   useEffect(() => {
-    setField("supply", "");
-    setField("receiver", "");
     setField("deployed", "");
   }, [alreadyDeployed]);
-
-  console.log(
-    daoInfo.governanceToken,
-    !daoInfo.governanceToken.name ||
-      !daoInfo.governanceToken.symbol ||
-      !daoInfo.governanceToken.supply ||
-      !daoInfo.governanceToken.receiver ||
-      !ethers.utils.isAddress(daoInfo.governanceToken.receiver) ||
-      isNaN(daoInfo.governanceToken.supply)
-  );
 
   return (
     <div>

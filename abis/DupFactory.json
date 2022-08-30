@@ -1,0 +1,512 @@
+[
+  {
+    "inputs": [],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "daoId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "governorAddress",
+        "type": "address"
+      }
+    ],
+    "name": "GovernorDeployed",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "previousOwner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "OwnershipTransferred",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "daoId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "timelockControllerAddress",
+        "type": "address"
+      }
+    ],
+    "name": "TimelockControllerDeployed",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "daoId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "tokenAddress",
+        "type": "address"
+      }
+    ],
+    "name": "TokenDeployed",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "daos",
+    "outputs": [
+      {
+        "internalType": "contract DUPLSP7Votes",
+        "name": "asset",
+        "type": "address"
+      },
+      {
+        "internalType": "contract DUPGovernor",
+        "name": "governor",
+        "type": "address"
+      },
+      {
+        "internalType": "contract DUPTimelockController",
+        "name": "timelockController",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "keymanager",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "up",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "deployG",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "deployL",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "deployLG",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "name_",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "symbol_",
+        "type": "string"
+      },
+      {
+        "internalType": "address",
+        "name": "newOwner_",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "supply_",
+        "type": "uint256"
+      }
+    ],
+    "name": "deployT",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "name_",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "symbol_",
+        "type": "string"
+      },
+      {
+        "internalType": "address",
+        "name": "newOwner_",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "supply_",
+        "type": "uint256"
+      }
+    ],
+    "name": "deployTG",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "name_",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "symbol_",
+        "type": "string"
+      },
+      {
+        "internalType": "address",
+        "name": "newOwner_",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "supply_",
+        "type": "uint256"
+      }
+    ],
+    "name": "deployTL",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "name_",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "symbol_",
+        "type": "string"
+      },
+      {
+        "internalType": "address",
+        "name": "newOwner_",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "supply_",
+        "type": "uint256"
+      }
+    ],
+    "name": "deployTLG",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "daoId_",
+        "type": "uint256"
+      }
+    ],
+    "name": "getDaoInfo",
+    "outputs": [
+      {
+        "components": [
+          {
+            "components": [
+              {
+                "internalType": "contract DUPLSP7Votes",
+                "name": "asset",
+                "type": "address"
+              },
+              {
+                "internalType": "contract DUPGovernor",
+                "name": "governor",
+                "type": "address"
+              },
+              {
+                "internalType": "contract DUPTimelockController",
+                "name": "timelockController",
+                "type": "address"
+              },
+              {
+                "internalType": "address",
+                "name": "keymanager",
+                "type": "address"
+              },
+              {
+                "internalType": "address",
+                "name": "up",
+                "type": "address"
+              }
+            ],
+            "internalType": "struct DUPFactory.DAO",
+            "name": "dao",
+            "type": "tuple"
+          },
+          {
+            "internalType": "uint256",
+            "name": "proposalCount",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct DUPFactory.DAOInfo",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getDaos",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "contract DUPLSP7Votes",
+            "name": "asset",
+            "type": "address"
+          },
+          {
+            "internalType": "contract DUPGovernor",
+            "name": "governor",
+            "type": "address"
+          },
+          {
+            "internalType": "contract DUPTimelockController",
+            "name": "timelockController",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "keymanager",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "up",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct DUPFactory.DAO[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "daoId_",
+        "type": "uint256"
+      }
+    ],
+    "name": "getDaosInfo",
+    "outputs": [
+      {
+        "components": [
+          {
+            "components": [
+              {
+                "internalType": "contract DUPLSP7Votes",
+                "name": "asset",
+                "type": "address"
+              },
+              {
+                "internalType": "contract DUPGovernor",
+                "name": "governor",
+                "type": "address"
+              },
+              {
+                "internalType": "contract DUPTimelockController",
+                "name": "timelockController",
+                "type": "address"
+              },
+              {
+                "internalType": "address",
+                "name": "keymanager",
+                "type": "address"
+              },
+              {
+                "internalType": "address",
+                "name": "up",
+                "type": "address"
+              }
+            ],
+            "internalType": "struct DUPFactory.DAO",
+            "name": "dao",
+            "type": "tuple"
+          },
+          {
+            "internalType": "uint256",
+            "name": "proposalCount",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct DUPFactory.DAOInfo[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "owner",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "daoId_",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "keyManager_",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "up_",
+        "type": "address"
+      },
+      {
+        "internalType": "string",
+        "name": "name_",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "votingDelay_",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "votingPeriod_",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "quorumNumerator_",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "minDelay_",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "executor_",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "deployedToken_",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "deployedGovernor_",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "deployedTimelockController_",
+        "type": "address"
+      }
+    ],
+    "name": "setup",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "transferOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]

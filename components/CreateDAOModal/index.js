@@ -1,7 +1,7 @@
 /* eslint-disable react/react-in-jsx-scope -- Unaware of jsxImportSource */
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useCallback } from "react";
 import {
   DialogTitle,
   DialogContentText,
@@ -82,24 +82,8 @@ const fileToArrayBuffer = (blob) => {
   }
 */
 
-const CreateDAOModal = ({ open, setOpen }) => {
-  const [activeStep, setActiveStep] = useState(0);
-
-  const [isContinueDisabled, setIsContinueDisabled] = useState(false);
-  //  uploading metadata => deploying contracts => createUp & keyManager => setup Governor
-  //  0:  preview
-  //  1:  uploading metadata
-  //  2:  metadata uploaded & asking to deployecontracts
-  //  3:  deploying contracts
-  //  4:  contracts deployed & up pending
-  //  5:  creating up & keymanager
-  //  6:  up created & setup pending
-  //  7:  setup governor
-  //  8:  redirect to dao
-  const [actionStep, setActionStep] = useState(0);
-
-  const [daoInfo, setDAOInfo] = useState({
-    up: {
+/*
+up: {
       name: "",
       description: "",
       avatar: "",
@@ -124,13 +108,64 @@ const CreateDAOModal = ({ open, setOpen }) => {
       executor: "",
       deployed: "",
     },
-  });
+*/
 
+const CreateDAOModal = ({ open, setOpen }) => {
+  const [activeStep, setActiveStep] = useState(0);
+
+  const [isContinueDisabled, setIsContinueDisabled] = useState(false);
+  //  uploading metadata => deploying contracts => createUp & keyManager => setup Governor
+  //  0:  preview
+  //  1:  uploading metadata
+  //  2:  metadata uploaded & asking to deployecontracts
+  //  3:  deploying contracts
+  //  4:  contracts deployed & up pending
+  //  5:  creating up & keymanager
+  //  6:  up created & setup pending
+  //  7:  setup governor
+  //  8:  redirect to dao
+  const [actionStep, setActionStep] = useState(0);
+
+  const [daoInfo, setDAOInfo] = useState({
+    up: {
+      name: "Unigrants DAO",
+      description:
+        "In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content. Lorem ipsum may be used as a placeholder before final copy is available. It is also used to temporarily replace text in a process called greeking, which allows designers to consider the form of a webpage or publication, without the meaning of the text influencing the design",
+      avatar: "",
+      cover: "",
+      categories: [],
+    },
+    governanceToken: {
+      name: "Sample Governance Token",
+      symbol: "SGT",
+      supply: "60",
+      receiver: "0x5cd86aaC1D5450163fdD4DE3e51896Aa39D52CAe",
+      deployed: "",
+    },
+    governor: {
+      votingDelay: "20",
+      votingPeriod: "50",
+      quorumNumerator: "80",
+      deployed: "",
+    },
+    timelock: {
+      minimumDelay: "50",
+      executor: "0x5cd86aaC1D5450163fdD4DE3e51896Aa39D52CAe",
+      deployed: "",
+    },
+  });
   const handleClose = () => {
     setOpen(false);
   };
 
-  const { erc725Config, getToken, getGovernor } = useContext(DataContext);
+  const {
+    erc725Config,
+    getToken,
+    getGovernor,
+    getDupFactory,
+    getUPAddress,
+    getLSPFactory,
+  } = useContext(DataContext);
 
   useEffect(() => {
     const main = async () => {
@@ -248,15 +283,185 @@ const CreateDAOModal = ({ open, setOpen }) => {
         },
       ],
     };
-
     return profileInfo;
   };
 
+  const deployContracts = useCallback(async () => {
+    const dupFactory = getDupFactory();
+    const upAddress = await getUPAddress();
+
+    return new Promise((resolve, reject) => {
+      const { name, symbol, receiver, supply } = daoInfo.governanceToken;
+      let alreadyConfirmed = false;
+      let resolveObj;
+      return dupFactory.web3.methods
+        .deployTLG(name, symbol, receiver, supply)
+        .send({ from: upAddress })
+        .on("error", function (error) {
+          return reject(error);
+        })
+        .on("transactionHash", function (transactionHash) {})
+        .on("receipt", function (receipt) {
+          setActionStep(3);
+          /// Need to handle DAO ID and deployed addresses and resolve it;
+        })
+        .on("confirmation", function (confirmationNumber, receipt) {
+          if (alreadyConfirmed) return;
+          if (confirmationNumber > 0) {
+            alreadyConfirmed = true;
+            setActionStep(4);
+            const factoryAddress = dupFactory.ethers.address;
+            resolveObj = Object.values(receipt.events)
+              .filter(
+                (event) =>
+                  event.address.toLowerCase() === factoryAddress.toLowerCase()
+              )
+              .reduce((pV, cV) => {
+                let daoId;
+                switch (cV.event) {
+                  case "GovernorDeployed":
+                    daoId = cV.returnValues.daoId;
+                    const { governorAddress } = cV.returnValues;
+                    return { ...pV, daoId, governorAddress };
+                  case "TimelockControllerDeployed":
+                    daoId = cV.returnValues.daoId;
+                    const { timelockControllerAddress } = cV.returnValues;
+                    return { ...pV, daoId, timelockControllerAddress };
+                  case "TokenDeployed":
+                    daoId = cV.returnValues.daoId;
+                    const { tokenAddress } = cV.returnValues;
+                    return { ...pV, daoId, tokenAddress };
+                }
+              }, {});
+            return resolve(resolveObj);
+          }
+        });
+    });
+  }, [getDupFactory]);
+
+  const deployUpAndKeymanager = async ({ controller, profileInfo }) => {
+    const lspFactory = await getLSPFactory();
+    console.log(ethers.utils.getAddress(controller));
+    const myContracts = await lspFactory.UniversalProfile.deploy({
+      controllerAddresses: [ethers.utils.getAddress(controller)], // Address which will controll the UP
+      lsp3Profile: profileInfo,
+    });
+    return myContracts;
+  };
+
+  const setupContracts = useCallback(
+    async ({
+      daoId,
+      keyManager,
+      upAddress,
+      name,
+      votingDelay,
+      votingPeriod,
+      quorumNumerator,
+      minDelay,
+      executor,
+      deployedToken,
+      deployedGovernor,
+      deployedTimelockController,
+    }) => {
+      const dupFactory = getDupFactory();
+      const myUpAddress = await getUPAddress();
+
+      console.log(
+        daoId,
+        keyManager,
+        upAddress,
+        name,
+        votingDelay,
+        votingPeriod,
+        quorumNumerator,
+        minDelay,
+        executor,
+        deployedToken,
+        deployedGovernor,
+        deployedTimelockController
+      );
+
+      if (getDupFactory) {
+        return new Promise((resolve, reject) => {
+          dupFactory.web3.methods
+            .setup(
+              daoId,
+              keyManager,
+              upAddress,
+              name,
+              votingDelay,
+              votingPeriod,
+              quorumNumerator,
+              minDelay,
+              executor,
+              deployedToken,
+              deployedGovernor,
+              deployedTimelockController
+            )
+            .send({ from: myUpAddress })
+            .on("error", function (error) {
+              reject(error);
+            })
+            .on("transactionHash", function (transactionHash) {
+              console.log("txHash: ", transactionHash);
+            })
+            .on("receipt", function (receipt) {
+              console.log("receipt: ", receipt.contractAddress); // contains the new contract address
+            })
+            .on("confirmation", function (confirmationNumber, receipt) {
+              console.log("confirmation: ", confirmationNumber);
+            })
+            .then(function (newContractInstance) {
+              console.log(newContractInstance.options.address); // instance with the new contract address
+            });
+        });
+      }
+    },
+    [getDupFactory]
+  );
+
   const setupDao = async () => {
+    const dupFactory = getDupFactory();
     setActionStep(1);
     const profileInfo = await getProfileInfo();
     console.log(profileInfo);
     setActionStep(2);
+    const { daoId, timelockControllerAddress, tokenAddress, governorAddress } =
+      await deployContracts();
+    setActionStep(5);
+    const upAndKeyManager = await deployUpAndKeymanager({
+      controller: timelockControllerAddress,
+      profileInfo,
+    });
+    setActionStep(6);
+
+    const upAddress = upAndKeyManager.LSP0ERC725Account.address;
+    const keyManager = upAndKeyManager.LSP6KeyManager.address;
+
+    const { votingDelay, votingPeriod, quorumNumerator } = daoInfo.governor;
+
+    const { minimumDelay: minDelay, executor } = daoInfo.timelock;
+    await setupContracts({
+      daoId,
+      keyManager,
+      upAddress,
+      name: profileInfo.name,
+      votingDelay: votingDelay ? votingDelay : 0,
+      votingPeriod: votingPeriod ? votingPeriod : 0,
+      quorumNumerator: quorumNumerator ? quorumNumerator : 0,
+      minDelay: minDelay ? minDelay : 0,
+      executor: executor ? executor : ethers.constants.AddressZero,
+      deployedToken: daoInfo.governanceToken.deployed
+        ? daoInfo.governanceToken.deployed
+        : ethers.constants.AddressZero,
+      deployedGovernor: daoInfo.governor.deployed
+        ? daoInfo.governor.deployed
+        : ethers.constants.AddressZero,
+      deployedTimelockController: daoInfo.timelock.deployed
+        ? daoInfo.timelock.deployed
+        : ethers.constants.AddressZero,
+    });
   };
 
   return (

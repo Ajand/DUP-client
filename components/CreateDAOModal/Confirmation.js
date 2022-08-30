@@ -78,7 +78,7 @@ const Confirmation = ({ daoInfo, actionStep }) => {
           `}
         >
           <img
-            src={URL.createObjectURL(daoInfo.up.cover)}
+            src={daoInfo.up.cover &&URL.createObjectURL(daoInfo.up.cover)}
             css={css`
               width: 100%;
             `}
@@ -99,7 +99,7 @@ const Confirmation = ({ daoInfo, actionStep }) => {
         >
           <Avatar
             sx={{ width: 80, height: 80 }}
-            src={URL.createObjectURL(daoInfo.up.avatar)}
+            src={daoInfo.up.avatar && URL.createObjectURL(daoInfo.up.avatar)}
           />
         </div>
       </div>

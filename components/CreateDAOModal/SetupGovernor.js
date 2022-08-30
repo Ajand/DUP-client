@@ -18,9 +18,6 @@ const SetupUPForm = ({ daoInfo, setDAOInfo }) => {
   };
 
   useEffect(() => {
-    setField("votingDelay", "");
-    setField("votingPeriod", "");
-    setField("quorumNumerator", "");
     setField("deployed", "");
   }, [alreadyDeployed]);
 

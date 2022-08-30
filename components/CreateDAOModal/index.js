@@ -122,6 +122,8 @@ const CreateDAOModal = ({ open, setOpen }) => {
             }
           } else {
             if (
+              !daoInfo.governanceToken.name ||
+              !daoInfo.governanceToken.symbol ||
               !daoInfo.governanceToken.supply ||
               !daoInfo.governanceToken.receiver ||
               !ethers.utils.isAddress(daoInfo.governanceToken.receiver) ||
@@ -129,6 +131,7 @@ const CreateDAOModal = ({ open, setOpen }) => {
             )
               result = true;
           }
+          break;
         case 2:
           if (daoInfo.governor.deployed) {
             if (!ethers.utils.isAddress(daoInfo.governor.deployed)) {
@@ -210,7 +213,7 @@ const CreateDAOModal = ({ open, setOpen }) => {
           </Button>
           <Button
             onClick={() => {
-              if (activeStep === 3) {
+              if (activeStep < 4) {
                 setActiveStep(activeStep + 1);
               } else {
                 setActionStep(actionStep + 1);

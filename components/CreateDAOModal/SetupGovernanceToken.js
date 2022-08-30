@@ -22,6 +22,16 @@ const SetupGovernanceToken = ({ daoInfo, setDAOInfo }) => {
     setField("deployed", "");
   }, [alreadyDeployed]);
 
+  console.log(
+    daoInfo.governanceToken,
+    !daoInfo.governanceToken.name ||
+      !daoInfo.governanceToken.symbol ||
+      !daoInfo.governanceToken.supply ||
+      !daoInfo.governanceToken.receiver ||
+      !ethers.utils.isAddress(daoInfo.governanceToken.receiver) ||
+      isNaN(daoInfo.governanceToken.supply)
+  );
+
   return (
     <div>
       <Typography
@@ -91,7 +101,30 @@ const SetupGovernanceToken = ({ daoInfo, setDAOInfo }) => {
         </>
       ) : (
         <>
-          {" "}
+          <TextField
+            css={css`
+              margin-bottom: 0.75em;
+            `}
+            variant="outlined"
+            label="Name"
+            size="small"
+            fullWidth
+            onChange={(e) => setField("name", e.target.value)}
+            value={daoInfo.governanceToken.name}
+            helperText={"Name is required."}
+          />
+          <TextField
+            css={css`
+              margin-bottom: 0.75em;
+            `}
+            variant="outlined"
+            label="Symbol"
+            size="small"
+            fullWidth
+            onChange={(e) => setField("symbol", e.target.value)}
+            value={daoInfo.governanceToken.symbol}
+            helperText={"Symbol is required."}
+          />
           <TextField
             css={css`
               margin-bottom: 0.75em;

@@ -13,8 +13,42 @@ import {
 } from "@mui/material";
 import { ethers } from "ethers";
 import { DataContext } from "../../lib/DataProvider";
-
+import { upload, uploadFile } from "../../lib/web3StorageHelpers";
 import DAOCreationStepper from "./DAOCreationStepper";
+import keccak256 from "keccak256";
+
+const getImageWidthAndHeight = (imageFile) => {
+  return new Promise((resolve, reject) => {
+    var reader = new FileReader();
+
+    //Read the contents of Image File.
+    reader.readAsDataURL(imageFile);
+    reader.onload = function (e) {
+      //Initiate the JavaScript Image object.
+      var image = new Image();
+
+      //Set the Base64 string return from FileReader as source.
+      image.src = e.target.result;
+
+      //Validate the File Height and Width.
+      image.onload = function () {
+        var height = this.height;
+        var width = this.width;
+        return resolve({ width, height });
+      };
+    };
+  });
+};
+
+const fileToArrayBuffer = (blob) => {
+  return new Promise((resolve, reject) => {
+    var fileReader = new FileReader();
+    fileReader.onload = function (event) {
+      return resolve(event.target.result);
+    };
+    fileReader.readAsArrayBuffer(blob);
+  });
+};
 
 /*
 {
@@ -180,6 +214,51 @@ const CreateDAOModal = ({ open, setOpen }) => {
     main();
   }, [activeStep, daoInfo]);
 
+  const getProfileInfo = async () => {
+    const coverSize = await getImageWidthAndHeight(daoInfo.up.cover);
+    const coverArrayBuffer = await fileToArrayBuffer(daoInfo.up.cover);
+    const coverHash = ethers.utils.keccak256(Buffer.from(coverArrayBuffer));
+
+    const avatarSize = await getImageWidthAndHeight(daoInfo.up.avatar);
+    const avatarArrayBuffer = await fileToArrayBuffer(daoInfo.up.avatar);
+    const avatarHash = ethers.utils.keccak256(Buffer.from(avatarArrayBuffer));
+
+    const cover = await uploadFile(daoInfo.up.cover);
+    const avatar = await uploadFile(daoInfo.up.avatar);
+
+    const profileInfo = {
+      name: daoInfo.up.name,
+      description: daoInfo.up.description,
+      profileImage: [
+        {
+          width: avatarSize.width,
+          height: avatarSize.height,
+          hashFunction: "keccak256(bytes)",
+          hash: avatarHash,
+          url: `ipfs://${avatar}`,
+        },
+      ],
+      backgroundImage: [
+        {
+          width: coverSize.width,
+          height: coverSize.height,
+          hashFunction: "keccak256(bytes)",
+          hash: coverHash,
+          url: `ipfs://${cover}`,
+        },
+      ],
+    };
+
+    return profileInfo;
+  };
+
+  const setupDao = async () => {
+    setActionStep(1);
+    const profileInfo = await getProfileInfo();
+    console.log(profileInfo);
+    setActionStep(2);
+  };
+
   return (
     <>
       <Dialog open={open} onClose={handleClose}>
@@ -216,12 +295,12 @@ const CreateDAOModal = ({ open, setOpen }) => {
               if (activeStep < 4) {
                 setActiveStep(activeStep + 1);
               } else {
-                setActionStep(actionStep + 1);
+                setupDao();
               }
             }}
             size="small"
             variant="contained"
-            disabled={isContinueDisabled}
+            disabled={isContinueDisabled || actionStep > 0}
           >
             {activeStep < 4 ? "Continue" : "Setup The DAO"}
           </Button>

@@ -22,10 +22,6 @@ import TimelockResolver from "../TimelockResolver";
 const Confirmation = ({ daoInfo, actionStep }) => {
   const [alreadyDeployed, setAlreadyDeployed] = useState(false);
 
-  console.log(actionStep);
-
-  console.log(actionStep);
-
   const theme = useTheme();
 
   const upStatus = () => {

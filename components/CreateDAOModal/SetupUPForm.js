@@ -149,7 +149,12 @@ const SetupUPForm = ({ daoInfo, setDAOInfo }) => {
                   </Button>
                 </div>
               </div>
-              <img src={URL.createObjectURL(daoInfo.up.cover)} css={css`width: 100%`} />
+              <img
+                src={URL.createObjectURL(daoInfo.up.cover)}
+                css={css`
+                  width: 100%;
+                `}
+              />
             </div>
           </>
         ) : (

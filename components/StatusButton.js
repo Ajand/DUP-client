@@ -17,7 +17,6 @@ import { Pending, Upload, CheckCircleOutline } from "@mui/icons-material";
 const StatusButton = ({ status }) => {
   const theme = useTheme();
 
-  console.log(status);
 
   if (status === "waiting") return <div></div>;
   if (status === "uploading")

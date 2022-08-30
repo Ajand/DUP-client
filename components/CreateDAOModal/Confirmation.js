@@ -19,10 +19,50 @@ import DigitalAssetResolver from "../DigitalAssetResolver";
 import GovernorResolver from "../GovernorResolver";
 import TimelockResolver from "../TimelockResolver";
 
-const Confirmation = ({ daoInfo }) => {
+const Confirmation = ({ daoInfo, actionStep }) => {
   const [alreadyDeployed, setAlreadyDeployed] = useState(false);
 
+  console.log(actionStep);
+
+  console.log(actionStep);
+
   const theme = useTheme();
+
+  const upStatus = () => {
+    if (actionStep === 0) return "waiting";
+    if (actionStep === 1) return "uploading";
+    if (actionStep < 4) return "uploaded";
+    if (actionStep === 4) return "pending";
+    if (actionStep === 5) return "deploying";
+    return "ready";
+  };
+
+  const governanceTokenStatus = () => {
+    if (actionStep < 2) return "waiting";
+    if (actionStep === 2) return "pending";
+    if (actionStep === 3) return "deploying";
+    return "ready";
+  };
+
+  const governorStatus = () => {
+    if (actionStep < 2) return "waiting";
+    if (actionStep === 2) return "pending";
+    if (actionStep === 3) return "deploying";
+    if (actionStep < 6) return "deployed";
+    if (actionStep === 6) return "pending";
+    if (actionStep === 7) return "setting-up";
+    return "ready";
+  };
+
+  const timelockControllerStatus = () => {
+    if (actionStep < 2) return "waiting";
+    if (actionStep === 2) return "pending";
+    if (actionStep === 3) return "deploying";
+    if (actionStep < 6) return "deployed";
+    if (actionStep === 6) return "pending";
+    if (actionStep === 7) return "setting-up";
+    return "ready";
+  };
 
   return (
     <div
@@ -87,7 +127,7 @@ const Confirmation = ({ daoInfo }) => {
           margin-bottom: 0.75em;
         `}
       >
-        <StatusButton />
+        <StatusButton status={upStatus()} />
       </div>
       <Divider />
       <div
@@ -130,7 +170,7 @@ const Confirmation = ({ daoInfo }) => {
           margin-bottom: 0.75em;
         `}
       >
-        <StatusButton />
+        <StatusButton status={governanceTokenStatus()} />
       </div>
       <Divider />
       <div
@@ -173,7 +213,7 @@ const Confirmation = ({ daoInfo }) => {
           margin-bottom: 0.75em;
         `}
       >
-        <StatusButton />
+        <StatusButton status={governorStatus()} />
       </div>
       <Divider />
       <div
@@ -210,7 +250,7 @@ const Confirmation = ({ daoInfo }) => {
           margin-bottom: 0.75em;
         `}
       >
-        <StatusButton />
+        <StatusButton status={timelockControllerStatus()} />
       </div>
     </div>
   );

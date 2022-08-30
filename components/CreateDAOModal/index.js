@@ -16,12 +16,8 @@ import { DataContext } from "../../lib/DataProvider";
 
 import DAOCreationStepper from "./DAOCreationStepper";
 
-const CreateDAOModal = ({ open, setOpen }) => {
-  const [activeStep, setActiveStep] = useState(4);
-
-  const [isContinueDisabled, setIsContinueDisabled] = useState(false);
-
-  const [daoInfo, setDAOInfo] = useState({
+/*
+{
     up: {
       name: "Unigrants DAO",
       description:
@@ -47,6 +43,51 @@ const CreateDAOModal = ({ open, setOpen }) => {
     timelock: {
       minimumDelay: "50",
       executor: "0x5cd86aaC1D5450163fdD4DE3e51896Aa39D52CAe",
+      deployed: "",
+    },
+  }
+*/
+
+const CreateDAOModal = ({ open, setOpen }) => {
+  const [activeStep, setActiveStep] = useState(0);
+
+  const [isContinueDisabled, setIsContinueDisabled] = useState(false);
+  //  uploading metadata => deploying contracts => createUp & keyManager => setup Governor
+  //  0:  preview
+  //  1:  uploading metadata
+  //  2:  metadata uploaded & asking to deployecontracts
+  //  3:  deploying contracts
+  //  4:  contracts deployed & up pending
+  //  5:  creating up & keymanager
+  //  6:  up created & setup pending
+  //  7:  setup governor
+  //  8:  redirect to dao
+  const [actionStep, setActionStep] = useState(0);
+
+  const [daoInfo, setDAOInfo] = useState({
+    up: {
+      name: "",
+      description: "",
+      avatar: "",
+      cover: "",
+      categories: [],
+    },
+    governanceToken: {
+      name: "",
+      symbol: "",
+      supply: "",
+      receiver: "",
+      deployed: "",
+    },
+    governor: {
+      votingDelay: "",
+      votingPeriod: "",
+      quorumNumerator: "",
+      deployed: "",
+    },
+    timelock: {
+      minimumDelay: "",
+      executor: "",
       deployed: "",
     },
   });
@@ -146,6 +187,7 @@ const CreateDAOModal = ({ open, setOpen }) => {
             setActiveStep={setActiveStep}
             setDAOInfo={setDAOInfo}
             daoInfo={daoInfo}
+            actionStep={actionStep}
           />
         </DialogContent>
         <DialogActions
@@ -154,19 +196,31 @@ const CreateDAOModal = ({ open, setOpen }) => {
           `}
         >
           <Button
-            onClick={() => setActiveStep(activeStep - 1)}
+            onClick={() => {
+              if (actionStep > 0) {
+                setActionStep(actionStep - 1);
+              } else {
+                setActiveStep(activeStep - 1);
+              }
+            }}
             size="small"
             disabled={!(activeStep > 0)}
           >
             Back
           </Button>
           <Button
-            onClick={() => setActiveStep(activeStep + 1)}
+            onClick={() => {
+              if (activeStep === 3) {
+                setActiveStep(activeStep + 1);
+              } else {
+                setActionStep(actionStep + 1);
+              }
+            }}
             size="small"
             variant="contained"
             disabled={isContinueDisabled}
           >
-            Continue
+            {activeStep < 4 ? "Continue" : "Setup The DAO"}
           </Button>
         </DialogActions>
       </Dialog>

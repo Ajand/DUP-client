@@ -44,6 +44,7 @@ export default function VerticalLinearStepper({
   setActiveStep,
   daoInfo,
   setDAOInfo,
+  actionStep
 }) {
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -64,7 +65,7 @@ export default function VerticalLinearStepper({
           <Step key={step.label}>
             <StepLabel>{step.label}</StepLabel>
             <StepContent>
-              {<step.component daoInfo={daoInfo} setDAOInfo={setDAOInfo} />}
+              {<step.component actionStep={actionStep} daoInfo={daoInfo} setDAOInfo={setDAOInfo} />}
             </StepContent>
           </Step>
         ))}

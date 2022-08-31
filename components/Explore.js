@@ -2,6 +2,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { useState, useEffect, useContext, useCallback } from "react";
+import { useRouter } from "next/router";
 import {
   Container,
   Typography,
@@ -18,11 +19,13 @@ import { convertIPFS } from "../lib/utils";
 const imageAddress =
   "https://www.tally.xyz/_next/image?url=https%3A%2F%2Fstatic.withtally.com%2Fd9e8442f-5cb7-4357-9567-3cdd7ae5930e_400x400.jpg&w=256&q=75";
 
-const DAORow = ({ dao }) => {
+const DAORow = ({ dao, id }) => {
   const { erc725Config, provider } = useContext(DataContext);
   const [daoInfo, setDaoInfo] = useState(null);
 
   const theme = useTheme();
+
+  const router = useRouter();
 
   useEffect(() => {
     const main = async () => {
@@ -56,6 +59,7 @@ const DAORow = ({ dao }) => {
           background: #042739;
         }
       `}
+      onClick={() => router.push(`/dao/${id}`)}
     >
       <div
         css={css`
@@ -145,8 +149,8 @@ const Explore = () => {
                 margin-bottom: 1em;
               `}
             />
-            {daos.map((dao) => (
-              <DAORow dao={dao} />
+            {daos.map((dao, id) => (
+              <DAORow dao={dao} id={id} />
             ))}
           </>
         )}

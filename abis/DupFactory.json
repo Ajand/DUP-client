@@ -81,6 +81,19 @@
     "type": "event"
   },
   {
+    "inputs": [],
+    "name": "daoCounts",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "_value",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "uint256",
@@ -253,6 +266,45 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "dupGovernorImpl",
+    "outputs": [
+      {
+        "internalType": "contract DUPGovernor",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "dupLsp7VotesImpl",
+    "outputs": [
+      {
+        "internalType": "contract DUPLSP7Votes",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "dupTimelockImpl",
+    "outputs": [
+      {
+        "internalType": "contract DUPTimelockController",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "uint256",
@@ -351,13 +403,7 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "daoId_",
-        "type": "uint256"
-      }
-    ],
+    "inputs": [],
     "name": "getDaosInfo",
     "outputs": [
       {

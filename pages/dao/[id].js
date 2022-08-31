@@ -63,7 +63,7 @@ const DAO = () => {
       ) : (
         <DAOInfo dao={dao} daoInfo={daoInfo} setProposalModalOpen={setProposeModal} />
       )}
-      <ProposeModal open={proposeModal} setOpen={setProposeModal} />
+      <ProposeModal open={proposeModal} setOpen={setProposeModal} dao={dao} />
     </div>
   );
 };

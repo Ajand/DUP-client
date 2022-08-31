@@ -23,10 +23,13 @@ import {
 import { Add } from "@mui/icons-material";
 import { ethers } from "ethers";
 import CallDataForm from "./CallDataForm";
+import { upload } from "../../lib/web3StorageHelpers";
+import { DataContext } from "../../lib/DataProvider";
 
-const ProposeModal = ({ open, setOpen }) => {
+const ProposeModal = ({ open, setOpen, dao }) => {
   const [description, setDescription] = useState("");
   const [proposalName, setProposalName] = useState("");
+  const [proposing, setProposing] = useState(false);
   const [actions, setActions] = useState([
     {
       target: "",
@@ -39,6 +42,8 @@ const ProposeModal = ({ open, setOpen }) => {
   const [abisInfo, setAbisInfo] = useState([
     { abi: "", inputs: [], params: [] },
   ]);
+
+  const { getGovernor, getUPAddress } = useContext(DataContext);
 
   const addAction = () => {
     setActions([
@@ -150,7 +155,9 @@ const ProposeModal = ({ open, setOpen }) => {
               margin-bottom: 0.75em;
             `}
             value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            onChange={(e) => {
+              setDescription(e.target.value);
+            }}
           />
 
           <Tabs
@@ -279,19 +286,68 @@ const ProposeModal = ({ open, setOpen }) => {
         >
           <Button
             onClick={() => {
-              setOpen(false);
+              //setOpen(false);
+              setProposing(false);
             }}
             size="small"
           >
             cancel
           </Button>
           <Button
-            disabled={isDisabled()}
-            onClick={() => {}}
+            disabled={isDisabled() || proposing}
+            onClick={async () => {
+              const myUpAddress = await getUPAddress();
+
+              setProposing(true);
+              const GovernanceABI = [
+                "function execute(uint256 operation, address to,uint256 value, bytes data)",
+              ];
+
+              let GovernanceIface = new ethers.utils.Interface(GovernanceABI);
+
+              const proposal = {
+                name: proposalName,
+                description,
+                actions: actions.map((action, i) => ({
+                  ...action,
+                  abiInfo: abisInfo[i],
+                  data: GovernanceIface.encodeFunctionData("execute", [
+                    action.executionType,
+                    action.target,
+                    action.value,
+                    action.callData,
+                  ]),
+                })),
+              };
+
+              const callDatas = proposal.actions.map((action) => action.data);
+
+              const descriptionUrl = `ipfs://${await upload(proposal)}`;
+
+              const governor = getGovernor(dao[0].governor);
+
+              governor.web3.methods
+                .propose(callDatas, descriptionUrl)
+                .send({ from: myUpAddress })
+                .on("error", function (error) {
+                  reject(error);
+                })
+                .on("transactionHash", function (transactionHash) {
+                  console.log("txHash: ", transactionHash);
+                })
+                .on("receipt", function (receipt) {
+                  console.log("receipt: ", receipt.contractAddress); // contains the new contract address
+                  setProposing(false);
+                  handleClose();
+                })
+                .on("confirmation", function (confirmationNumber, receipt) {
+                  console.log("confirmation: ", confirmationNumber);
+                });
+            }}
             size="small"
             variant="contained"
           >
-            Propose
+            {proposing ? "Proposing ..." : "Propose"}
           </Button>
         </DialogActions>
       </Dialog>

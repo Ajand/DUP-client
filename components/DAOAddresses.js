@@ -6,7 +6,6 @@ import { Paper, Typography, useTheme } from "@mui/material";
 const DAOAddresses = ({ dao }) => {
   const theme = useTheme();
 
-  console.log(dao);
 
   return (
     <Paper

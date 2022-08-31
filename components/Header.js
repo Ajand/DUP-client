@@ -7,8 +7,10 @@ import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
+import { useRouter } from "next/router";
 
 const Header = () => {
+  const router = useRouter();
   return (
     <Box>
       <AppBar
@@ -28,13 +30,15 @@ const Header = () => {
             css={css`
               display: flex;
               align-items: center;
+              cursor: pointer;
             `}
+            onClick={() => router.push("/")}
           >
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
               DUP
             </Typography>
           </div>
-        {/*  <Button variant="contained" color="primary">
+          {/*  <Button variant="contained" color="primary">
             Connect with UP
   </Button> */}
         </Toolbar>

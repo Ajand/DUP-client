@@ -68,7 +68,7 @@ const SetupGovernanceToken = ({ daoInfo, setDAOInfo }) => {
             <>
               <TextField
                 variant="outlined"
-                label="Receiver"
+                label="Deployed Token Address"
                 size="small"
                 fullWidth
                 onChange={(e) => setField("deployed", e.target.value)}

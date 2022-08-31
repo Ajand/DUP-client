@@ -7,8 +7,6 @@ import { formatDateCompact } from "../lib/utils";
 const ContractParams = ({ loading, timelockController, governor }) => {
   const theme = useTheme();
 
-  console.log(loading, timelockController, governor);
-
   return (
     <Paper
       css={css`

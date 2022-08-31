@@ -1,15 +1,16 @@
 /* eslint-disable react/react-in-jsx-scope -- Unaware of jsxImportSource */
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import Header from "../../components/Header";
-import DAOInfo from "../../components/DaoInfo";
+import Header from "../../../components/Header";
+import DAOInfo from "../../../components/DaoInfo";
 import { useRouter } from "next/router";
 import { useState, useEffect, useContext, useCallback } from "react";
-import { DataContext } from "../../lib/DataProvider";
+import { DataContext } from "../../../lib/DataProvider";
 import { ERC725 } from "@erc725/erc725.js";
 import LSP3UniversalProfileMetadata from "@erc725/erc725.js/schemas/LSP3UniversalProfileMetadata.json";
 import { Typography } from "@mui/material";
-import ProposeModal from "../../components/ProposeModal";
+import ProposeModal from "../../../components/ProposeModal";
+import ProposalTable from "../../../components/ProposalsTable";
 
 const DAO = () => {
   const router = useRouter();
@@ -61,8 +62,13 @@ const DAO = () => {
           Loading DAO data ...
         </Typography>
       ) : (
-        <DAOInfo dao={dao} daoInfo={daoInfo} setProposalModalOpen={setProposeModal} />
+        <DAOInfo
+          dao={dao}
+          daoInfo={daoInfo}
+          setProposalModalOpen={setProposeModal}
+        />
       )}
+      <ProposalTable dao={dao} />
       <ProposeModal open={proposeModal} setOpen={setProposeModal} dao={dao} />
     </div>
   );

@@ -128,29 +128,28 @@ const CreateDAOModal = ({ open, setOpen }) => {
 
   const [daoInfo, setDAOInfo] = useState({
     up: {
-      name: "Unigrants DAO",
-      description:
-        "In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content. Lorem ipsum may be used as a placeholder before final copy is available. It is also used to temporarily replace text in a process called greeking, which allows designers to consider the form of a webpage or publication, without the meaning of the text influencing the design",
+      name: "",
+      description: "",
       avatar: "",
       cover: "",
       categories: [],
     },
     governanceToken: {
-      name: "Sample Governance Token",
-      symbol: "SGT",
-      supply: "60",
-      receiver: "0x5cd86aaC1D5450163fdD4DE3e51896Aa39D52CAe",
+      name: "",
+      symbol: "",
+      supply: "",
+      receiver: "",
       deployed: "",
     },
     governor: {
-      votingDelay: "20",
-      votingPeriod: "50",
-      quorumNumerator: "80",
+      votingDelay: "",
+      votingPeriod: "",
+      quorumNumerator: "",
       deployed: "",
     },
     timelock: {
-      minimumDelay: "50",
-      executor: "0x5cd86aaC1D5450163fdD4DE3e51896Aa39D52CAe",
+      minimumDelay: "",
+      executor: "",
       deployed: "",
     },
   });
@@ -411,9 +410,6 @@ const CreateDAOModal = ({ open, setOpen }) => {
             })
             .on("confirmation", function (confirmationNumber, receipt) {
               console.log("confirmation: ", confirmationNumber);
-            })
-            .then(function (newContractInstance) {
-              console.log(newContractInstance.options.address); // instance with the new contract address
             });
         });
       }

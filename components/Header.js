@@ -11,7 +11,13 @@ import Button from "@mui/material/Button";
 const Header = () => {
   return (
     <Box>
-      <AppBar position="static" color="inherit">
+      <AppBar
+        position="static"
+        color="inherit"
+        css={css`
+          border-radius: 0;
+        `}
+      >
         <Toolbar
           css={css`
             display: flex;
@@ -27,16 +33,10 @@ const Header = () => {
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
               DUP
             </Typography>
-            <Button
-              css={css`
-                margin-left: 2em;
-              `}
-              color="inherit"
-            >
-              Link a DAO
-            </Button>
           </div>
-          <Button variant="contained" color="primary">Connect with UP</Button>
+        {/*  <Button variant="contained" color="primary">
+            Connect with UP
+  </Button> */}
         </Toolbar>
       </AppBar>
     </Box>

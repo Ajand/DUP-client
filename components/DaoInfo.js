@@ -9,14 +9,44 @@ import {
   Paper,
   Grid,
   Item,
+  useTheme,
 } from "@mui/material";
+import { convertIPFS } from "../lib/utils";
+import { useState, useEffect, useContext, useCallback } from "react";
+import { DataContext } from "../lib/DataProvider";
 
 import ContractParams from "./ContractParams";
+import DAOAddresses from "./DAOAddresses";
 
-const imageAddress =
-  "https://www.tally.xyz/_next/image?url=https%3A%2F%2Fstatic.withtally.com%2Fd9e8442f-5cb7-4357-9567-3cdd7ae5930e_400x400.jpg&w=256&q=75";
+const DAOInfo = ({ dao, daoInfo }) => {
+  const theme = useTheme();
 
-const DAOInfo = () => {
+  const [loading, setLoading] = useState(true);
+  const [timelockController, setTimelockController] = useState(false);
+  const [governor, setGovernor] = useState(false);
+
+  const { getGovernor, getTimelockController } = useContext(DataContext);
+
+  useEffect(() => {
+    const main = async () => {
+      try {
+        const timelock = getTimelockController(dao[0].timelockController);
+        const minimumDelay = await timelock.ethers.getMinDelay();
+        const governor = getGovernor(dao[0].governor);
+        const votingDelay = await governor.ethers.votingDelay();
+        const votingPeriod = await governor.ethers.votingPeriod();
+        const quorumNumerator = await governor.ethers["quorumNumerator()"]();
+        setGovernor({ votingDelay, votingPeriod, quorumNumerator });
+        setTimelockController({ minimumDelay });
+        setLoading(false);
+      } catch (err) {
+        setLoading(false);
+      }
+    };
+
+    main();
+  }, []);
+
   return (
     <Container
       css={css`
@@ -25,38 +55,66 @@ const DAOInfo = () => {
     >
       <div
         css={css`
-          display: flex;
-          justify-content: space-between;
-          margin-bottom: 2em;
+          position: relative;
         `}
       >
         <div
           css={css`
-            display: flex;
+            height: 200px;
+            overflow: hidden;
           `}
         >
-          <Avatar src={imageAddress} />
-          <div
+          <img
+            src={convertIPFS(daoInfo.value.LSP3Profile.backgroundImage[0].url)}
             css={css`
-              margin-left: 1em;
+              width: 100%;
             `}
-          >
-            <Typography variant="h4">Uniswap</Typography>
-            <Typography variant="body2">https://uniswap.org</Typography>
-          </div>
+          />
         </div>
-        <div>
-          <Button variant="outlined">Create New Proposal</Button>
-          <Button
-            css={css`
-              margin-left: 1em;
-            `}
-            variant="contained"
-          >
-            Delegate Vote
-          </Button>
+
+        <div
+          css={css`
+            background: #4f6070;
+            border-radius: 100px;
+            padding: 0.5em;
+            display: inline-block;
+            border: 2px solid ${theme.palette.secondary.main};
+            position: absolute;
+            bottom: -40px;
+            left: calc(50% - 60px);
+          `}
+        >
+          <Avatar
+            sx={{ width: 80, height: 80 }}
+            src={convertIPFS(daoInfo.value.LSP3Profile.profileImage[0].url)}
+          />
         </div>
       </div>
+      <div
+        css={css`
+          margin-top: 60px;
+          margin-bottom: 50px;
+        `}
+      >
+        <Typography
+          variant="h5"
+          css={css`
+            text-align: center;
+            margin-bottom: 20px;
+          `}
+        >
+          {daoInfo.value.LSP3Profile.name}
+        </Typography>
+        <Typography
+          variant="body1"
+          css={css`
+            margin-top: 0.5em;
+          `}
+        >
+          {daoInfo.value.LSP3Profile.description}
+        </Typography>
+      </div>
+
       <Paper
         css={css`
           padding: 1em;
@@ -66,7 +124,7 @@ const DAOInfo = () => {
           css={css`
             display: flex;
             justify-content: space-between;
-            max-width: 400px;
+            align-items: center;
             margin: auto;
           `}
         >
@@ -75,36 +133,34 @@ const DAOInfo = () => {
               text-align: center;
             `}
           >
-            <Typography variant="body2">Proposals</Typography>
-            <Typography variant="body1">1000</Typography>
+            <Typography variant="body1">
+              Proposals: {String(dao.proposalCount)}
+            </Typography>
           </div>
-          <div
-            css={css`
-              text-align: center;
-              margin-left: 1em;
-            `}
-          >
-            <Typography variant="body2">Holders</Typography>
-            <Typography variant="body1">1000</Typography>
-          </div>
-          <div
-            css={css`
-              text-align: center;
-              margin-left: 1em;
-            `}
-          >
-            <Typography variant="body2">Voters</Typography>
-            <Typography variant="body1">1000</Typography>
+          <div>
+            <Button variant="outlined">Create New Proposal</Button>
+            <Button
+              css={css`
+                margin-left: 1em;
+              `}
+              variant="contained"
+            >
+              Delegate Vote
+            </Button>
           </div>
         </div>
       </Paper>
       <div>
-        <Grid container >
+        <Grid container>
           <Grid md={4}>
-            <ContractParams />
+            <ContractParams
+              loading={loading}
+              timelockController={timelockController}
+              governor={governor}
+            />
           </Grid>
           <Grid md={8}>
-            <ContractParams />
+            <DAOAddresses dao={dao} />
           </Grid>
         </Grid>
       </div>

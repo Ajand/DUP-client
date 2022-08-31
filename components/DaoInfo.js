@@ -18,7 +18,7 @@ import { DataContext } from "../lib/DataProvider";
 import ContractParams from "./ContractParams";
 import DAOAddresses from "./DAOAddresses";
 
-const DAOInfo = ({ dao, daoInfo }) => {
+const DAOInfo = ({ dao, daoInfo, setProposalModalOpen }) => {
   const theme = useTheme();
 
   const [loading, setLoading] = useState(true);
@@ -138,7 +138,14 @@ const DAOInfo = ({ dao, daoInfo }) => {
             </Typography>
           </div>
           <div>
-            <Button variant="outlined">Create New Proposal</Button>
+            <Button
+              variant="outlined"
+              onClick={() => {
+                setProposalModalOpen(true);
+              }}
+            >
+              Create New Proposal
+            </Button>
             <Button
               css={css`
                 margin-left: 1em;

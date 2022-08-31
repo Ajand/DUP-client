@@ -31,3 +31,11 @@ a {
   background: #65ecb4;
   border-radius: 10px;
 }
+
+
+@font-face {
+  font-family: "iconfont";
+  src: url("//at.alicdn.com/t/font_1207200_j3on8j6kuhl.ttf?t=1591723814839")
+    format("truetype");
+}
+

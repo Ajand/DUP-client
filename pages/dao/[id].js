@@ -9,6 +9,7 @@ import { DataContext } from "../../lib/DataProvider";
 import { ERC725 } from "@erc725/erc725.js";
 import LSP3UniversalProfileMetadata from "@erc725/erc725.js/schemas/LSP3UniversalProfileMetadata.json";
 import { Typography } from "@mui/material";
+import ProposeModal from "../../components/ProposeModal";
 
 const DAO = () => {
   const router = useRouter();
@@ -19,6 +20,8 @@ const DAO = () => {
   const [daoInfo, setDaoInfo] = useState(null);
 
   const [loading, setLoading] = useState(true);
+
+  const [proposeModal, setProposeModal] = useState(false);
 
   useEffect(() => {
     const main = async () => {
@@ -58,8 +61,9 @@ const DAO = () => {
           Loading DAO data ...
         </Typography>
       ) : (
-        <DAOInfo dao={dao} daoInfo={daoInfo} />
+        <DAOInfo dao={dao} daoInfo={daoInfo} setProposalModalOpen={setProposeModal} />
       )}
+      <ProposeModal open={proposeModal} setOpen={setProposeModal} />
     </div>
   );
 };

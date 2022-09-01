@@ -18,7 +18,12 @@ import { DataContext } from "../lib/DataProvider";
 import ContractParams from "./ContractParams";
 import DAOAddresses from "./DAOAddresses";
 
-const DAOInfo = ({ dao, daoInfo, setProposalModalOpen }) => {
+const DAOInfo = ({
+  dao,
+  daoInfo,
+  setProposalModalOpen,
+  setDelegationModalOpen,
+}) => {
   const theme = useTheme();
 
   const [loading, setLoading] = useState(true);
@@ -151,6 +156,9 @@ const DAOInfo = ({ dao, daoInfo, setProposalModalOpen }) => {
                 margin-left: 1em;
               `}
               variant="contained"
+              onClick={() => {
+                setDelegationModalOpen(true);
+              }}
             >
               Delegate Vote
             </Button>

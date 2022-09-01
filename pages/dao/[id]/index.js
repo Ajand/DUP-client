@@ -10,6 +10,7 @@ import { ERC725 } from "@erc725/erc725.js";
 import LSP3UniversalProfileMetadata from "@erc725/erc725.js/schemas/LSP3UniversalProfileMetadata.json";
 import { Typography } from "@mui/material";
 import ProposeModal from "../../../components/ProposeModal";
+import DelegationModal from "../../../components/DelegationModal";
 import ProposalTable from "../../../components/ProposalsTable";
 
 const DAO = () => {
@@ -23,6 +24,7 @@ const DAO = () => {
   const [loading, setLoading] = useState(true);
 
   const [proposeModal, setProposeModal] = useState(false);
+  const [delegationModal, setDelegationModal] = useState(false);
 
   useEffect(() => {
     const main = async () => {
@@ -66,10 +68,16 @@ const DAO = () => {
           dao={dao}
           daoInfo={daoInfo}
           setProposalModalOpen={setProposeModal}
+          setDelegationModalOpen={setDelegationModal}
         />
       )}
       <ProposalTable dao={dao} />
       <ProposeModal open={proposeModal} setOpen={setProposeModal} dao={dao} />
+      <DelegationModal
+        open={delegationModal}
+        setOpen={setDelegationModal}
+        dao={dao}
+      />
     </div>
   );
 };

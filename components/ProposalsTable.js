@@ -22,7 +22,9 @@ const ProposalTable = ({ dao }) => {
     const main = async () => {
       try {
         const governor = getGovernor(dao[0].governor);
+        console.log(governor);
         const proposals = await governor.ethers.getProposals();
+        console.log(proposals)
         setProposals(proposals);
         setLoading(false);
       } catch (err) {
@@ -53,7 +55,8 @@ const ProposalTable = ({ dao }) => {
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
               <TableHead>
                 <TableRow>
-                  <TableCell align="left">Proposal Name</TableCell>
+                <TableCell align="left">Proposal Name</TableCell>
+                <TableCell align="center">Proposal ID</TableCell>
                   <TableCell align="right">Proposal Status</TableCell>
                 </TableRow>
               </TableHead>
@@ -71,7 +74,6 @@ const ProposalTable = ({ dao }) => {
 };
 
 export default ProposalTable;
-
 
 // Token: 0xd8F78EFBDc25b3dbf47F1f51682d9ec78157D316
 // Token: 0x69751F87A6247E778d39e7e080a4fd1fa0877a35

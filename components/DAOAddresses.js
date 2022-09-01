@@ -2,10 +2,11 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { Paper, Typography, useTheme } from "@mui/material";
+import { useRouter } from "next/router";
 
 const DAOAddresses = ({ dao }) => {
   const theme = useTheme();
-
+  const router = useRouter();
 
   return (
     <Paper
@@ -42,7 +43,17 @@ const DAOAddresses = ({ dao }) => {
         `}
       >
         <Typography variant="body1">Governance Token</Typography>
-        <Typography variant="body1">{dao[0].asset}</Typography>
+        <Typography
+          css={css`
+            cursor: pointer;
+            color: ${theme.palette.secondary.main};
+            text-decoration: underline;
+          `}
+          variant="body1"
+          onClick={() => router.push(`/token-factory/token/${dao[0].asset}`)}
+        >
+          {dao[0].asset}
+        </Typography>
       </div>
       <div
         css={css`

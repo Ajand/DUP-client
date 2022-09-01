@@ -88,7 +88,7 @@ const SetupUPForm = ({ daoInfo, setDAOInfo }) => {
               margin-bottom: 0.75em;
             `}
             variant="outlined"
-            label="Voting Delay"
+            label="Voting Delay (Blocks)"
             size="small"
             fullWidth
             onChange={(e) => setField("votingDelay", e.target.value)}
@@ -105,12 +105,16 @@ const SetupUPForm = ({ daoInfo, setDAOInfo }) => {
               margin-bottom: 0.75em;
             `}
             variant="outlined"
-            label="Voting Period"
+            label="Voting Period (Blocks)"
             size="small"
             fullWidth
             onChange={(e) => setField("votingPeriod", e.target.value)}
             value={daoInfo.governor.votingPeriod}
-            error={isNaN(daoInfo.governor.votingPeriod)}
+            error={
+              isNaN(daoInfo.governor.votingPeriod) ||
+              daoInfo.governor.votingPeriod > 100 ||
+              daoInfo.governor.votingPeriod < 0
+            }
             helperText={
               isNaN(daoInfo.governor.votingPeriod)
                 ? "Voting period must be a number."
@@ -124,10 +128,16 @@ const SetupUPForm = ({ daoInfo, setDAOInfo }) => {
             fullWidth
             onChange={(e) => setField("quorumNumerator", e.target.value)}
             value={daoInfo.governor.quorumNumerator}
-            error={isNaN(daoInfo.governor.quorumNumerator)}
+            error={
+              isNaN(daoInfo.governor.quorumNumerator) ||
+              daoInfo.governor.quorumNumerator > 100 ||
+              daoInfo.governor.quorumNumerator < 0
+            }
             helperText={
-              isNaN(daoInfo.governor.quorumNumerator)
-                ? "Voting period must be a number."
+              isNaN(daoInfo.governor.quorumNumerator) ||
+              daoInfo.governor.quorumNumerator > 100 ||
+              daoInfo.governor.quorumNumerator < 0
+                ? "Voting period must be a number between 0 and 100."
                 : ""
             }
           />

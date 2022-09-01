@@ -167,14 +167,14 @@ const DAOInfo = ({
       </Paper>
       <div>
         <Grid container>
-          <Grid md={4}>
+          <Grid item md={4}>
             <ContractParams
               loading={loading}
               timelockController={timelockController}
               governor={governor}
             />
           </Grid>
-          <Grid md={8}>
+          <Grid item md={8}>
             <DAOAddresses dao={dao} />
           </Grid>
         </Grid>

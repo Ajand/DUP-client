@@ -29,20 +29,25 @@ const DAORow = ({ dao, id }) => {
 
   useEffect(() => {
     const main = async () => {
-      const erc725 = new ERC725(
-        LSP3UniversalProfileMetadata,
-        dao[0].up,
-        provider,
-        erc725Config
-      );
-
-      setDaoInfo(await erc725.fetchData("LSP3Profile"));
+      try {
+        const erc725 = new ERC725(
+          LSP3UniversalProfileMetadata,
+          dao[0].up,
+          provider,
+          erc725Config
+        );
+        setDaoInfo(await erc725.fetchData("LSP3Profile"));
+      } catch (err) {
+        console.log(err);
+      }
     };
 
     if (provider) {
       main();
     }
   }, [provider]);
+
+  if (!daoInfo) return <div></div>;
 
   return (
     <div
@@ -108,7 +113,7 @@ const DAORow = ({ dao, id }) => {
 };
 
 const Explore = () => {
-  const { getDupFactory } = useContext(DataContext);
+  const { getDupFactory, provider, upAddress } = useContext(DataContext);
   const [daos, setDaos] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -122,7 +127,7 @@ const Explore = () => {
     };
 
     main();
-  }, [getDupFactory]);
+  }, [getDupFactory, provider, upAddress]);
 
   return (
     <Container
@@ -150,7 +155,7 @@ const Explore = () => {
               `}
             />
             {daos.map((dao, id) => (
-              <DAORow dao={dao} id={id} />
+              <DAORow key={id} dao={dao} id={id} />
             ))}
           </>
         )}

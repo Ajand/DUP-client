@@ -49,7 +49,7 @@ const DAO = () => {
     if (getDupFactory && id) {
       main();
     }
-  }, [getDupFactory, id]);
+  }, [getDupFactory, id, proposeModal]);
 
   return (
     <div>

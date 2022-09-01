@@ -93,6 +93,7 @@ const CallDataForm = ({
               css={css`
                 margin-bottom: 0.75em;
               `}
+              key={inpu.name}
               helperText={input.type}
               error={isError(input.type, params[i])}
               value={params[i]}

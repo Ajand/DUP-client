@@ -42,7 +42,7 @@ const DelegationModal = ({ open, setOpen, dao }) => {
     setDelegateTo("");
     const main = async () => {
       await getUPAddress();
-      if (upAddress) {
+      if (upAddress && dao && dao[0]) {
         const tokenAddress = dao[0].asset;
         const token = new ERC725(
           [LSP4DigitalAsset[0], LSP4DigitalAsset[1], LSP4DigitalAsset[2]],
@@ -95,7 +95,7 @@ const DelegationModal = ({ open, setOpen, dao }) => {
           width: 600px;
         `}
       >
-        Propose
+        Delegation
       </DialogTitle>
       <DialogContent>
         {loading ? (

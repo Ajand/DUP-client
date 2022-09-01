@@ -96,7 +96,7 @@ const SetupTimelockController = ({ daoInfo, setDAOInfo }) => {
               margin-bottom: 0.75em;
             `}
             variant="outlined"
-            label="Minimum Delay"
+            label="Minimum Delay (Seconds)"
             size="small"
             fullWidth
             onChange={(e) => setField("minimumDelay", e.target.value)}
@@ -109,17 +109,7 @@ const SetupTimelockController = ({ daoInfo, setDAOInfo }) => {
             }
           />
           <>
-            {ethers.utils.isAddress(daoInfo.timelock.executor) ? (
-              <>
-                <UPResolver
-                  address={ethers.utils.getAddress(daoInfo.timelock.executor)}
-                  onClose={() => {
-                    setField("executor", "");
-                  }}
-                  label="Executor:"
-                />
-              </>
-            ) : (
+            {
               <TextField
                 css={css`
                   margin-bottom: 0.75em;
@@ -141,11 +131,11 @@ const SetupTimelockController = ({ daoInfo, setDAOInfo }) => {
                     daoInfo.timelock.executor &&
                     !ethers.utils.isAddress(daoInfo.timelock.executor)
                   )
-                    ? "This is the account that can execute successful purposals. It's better to be a multisig."
+                    ? "Usually this is address 0. It means everybody become executor."
                     : "Executor must be a proper address"
                 }
               />
-            )}
+            }
           </>
         </>
       )}

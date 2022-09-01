@@ -16,6 +16,7 @@ import { DataContext } from "../../lib/DataProvider";
 import { upload, uploadFile } from "../../lib/web3StorageHelpers";
 import DAOCreationStepper from "./DAOCreationStepper";
 import keccak256 from "keccak256";
+import { useRouter } from "next/router";
 
 const getImageWidthAndHeight = (imageFile) => {
   return new Promise((resolve, reject) => {
@@ -126,6 +127,8 @@ const CreateDAOModal = ({ open, setOpen }) => {
   //  8:  redirect to dao
   const [actionStep, setActionStep] = useState(0);
 
+  const router = useRouter();
+
   const [daoInfo, setDAOInfo] = useState({
     up: {
       name: "",
@@ -149,7 +152,7 @@ const CreateDAOModal = ({ open, setOpen }) => {
     },
     timelock: {
       minimumDelay: "",
-      executor: "",
+      executor: ethers.constants.AddressZero,
       deployed: "",
     },
   });
@@ -173,6 +176,8 @@ const CreateDAOModal = ({ open, setOpen }) => {
       switch (activeStep) {
         case 0:
           if (!daoInfo.up.name) result = true;
+          if (!daoInfo.up.avatar) result = true;
+          if (!daoInfo.up.cover) result = true;
           break;
         case 1:
           if (daoInfo.governanceToken.deployed) {
@@ -217,6 +222,8 @@ const CreateDAOModal = ({ open, setOpen }) => {
               !daoInfo.governor.votingDelay ||
               !daoInfo.governor.votingPeriod ||
               !daoInfo.governor.quorumNumerator ||
+              daoInfo.governor.quorumNumerator > 100 ||
+              daoInfo.governor.quorumNumerator < 0 ||
               isNaN(daoInfo.governor.votingDelay) ||
               isNaN(daoInfo.governor.votingPeriod) ||
               isNaN(daoInfo.governor.quorumNumerator)
@@ -282,7 +289,12 @@ const CreateDAOModal = ({ open, setOpen }) => {
         },
       ],
     };
-    return profileInfo;
+
+    const uploadedProfile = `ipfs://${await upload({
+      LSP3Profile: profileInfo,
+    })}`;
+
+    return { profileInfo, uploadedProfile };
   };
 
   const deployContracts = useCallback(async () => {
@@ -293,8 +305,36 @@ const CreateDAOModal = ({ open, setOpen }) => {
       const { name, symbol, receiver, supply } = daoInfo.governanceToken;
       let alreadyConfirmed = false;
       let resolveObj;
-      return dupFactory.web3.methods
-        .deployTLG(name, symbol, receiver, supply)
+
+      let properMethod;
+
+      const deployedGovernor = daoInfo.governor.deployed;
+      const deployedTimelock = daoInfo.timelock.deployed;
+      const deployedToken = daoInfo.governanceToken.deployed;
+
+      if (deployedToken && deployedTimelock && deployedGovernor) {
+        properMethod = () => alert("not supported yet");
+      } else if (deployedToken && deployedTimelock) {
+        properMethod = () => dupFactory.web3.methods.deployG();
+      } else if (deployedToken && deployedGovernor) {
+        properMethod = () => dupFactory.web3.methods.deployL();
+      } else if (deployedGovernor && deployedTimelock) {
+        properMethod = () =>
+          dupFactory.web3.methods.deployT(name, symbol, receiver, supply);
+      } else if (deployedToken) {
+        properMethod = () => dupFactory.web3.methods.deployLG();
+      } else if (deployedGovernor) {
+        properMethod = () =>
+          dupFactory.web3.methods.deployTL(name, symbol, receiver, supply);
+      } else if (deployedTimelock) {
+        properMethod = () =>
+          dupFactory.web3.methods.deployTG(name, symbol, receiver, supply);
+      } else {
+        properMethod = () =>
+          dupFactory.web3.methods.deployTLG(name, symbol, receiver, supply);
+      }
+
+      return properMethod()
         .send({ from: upAddress })
         .on("error", function (error) {
           return reject(error);
@@ -340,11 +380,12 @@ const CreateDAOModal = ({ open, setOpen }) => {
 
   const deployUpAndKeymanager = async ({ controller, profileInfo }) => {
     const lspFactory = await getLSPFactory();
-    console.log(ethers.utils.getAddress(controller));
+    console.log(profileInfo);
     const myContracts = await lspFactory.UniversalProfile.deploy({
-      controllerAddresses: [ethers.utils.getAddress(controller)], // Address which will controll the UP
-      lsp3Profile: profileInfo,
+      controllerAddresses: [ethers.utils.getAddress(controller)],
+      lsp3Profile: profileInfo, //profileInfo,
     });
+
     return myContracts;
   };
 
@@ -365,21 +406,6 @@ const CreateDAOModal = ({ open, setOpen }) => {
     }) => {
       const dupFactory = getDupFactory();
       const myUpAddress = await getUPAddress();
-
-      console.log(
-        daoId,
-        keyManager,
-        upAddress,
-        name,
-        votingDelay,
-        votingPeriod,
-        quorumNumerator,
-        minDelay,
-        executor,
-        deployedToken,
-        deployedGovernor,
-        deployedTimelockController
-      );
 
       if (getDupFactory) {
         return new Promise((resolve, reject) => {
@@ -404,6 +430,7 @@ const CreateDAOModal = ({ open, setOpen }) => {
             })
             .on("transactionHash", function (transactionHash) {
               console.log("txHash: ", transactionHash);
+              router.push(`/dao/${daoId}`);
             })
             .on("receipt", function (receipt) {
               console.log("receipt: ", receipt.contractAddress); // contains the new contract address
@@ -418,18 +445,21 @@ const CreateDAOModal = ({ open, setOpen }) => {
   );
 
   const setupDao = async () => {
-    const dupFactory = getDupFactory();
     setActionStep(1);
-    const profileInfo = await getProfileInfo();
+    const { profileInfo, uploadedProfile } = await getProfileInfo();
     console.log(profileInfo);
     setActionStep(2);
     const { daoId, timelockControllerAddress, tokenAddress, governorAddress } =
       await deployContracts();
     setActionStep(5);
     const upAndKeyManager = await deployUpAndKeymanager({
-      controller: timelockControllerAddress,
-      profileInfo,
+      controller: timelockControllerAddress
+        ? timelockControllerAddress
+        : daoInfo.timelock.deployed,
+      profileInfo: uploadedProfile,
     });
+
+    console.log(upAndKeyManager);
     setActionStep(6);
 
     const upAddress = upAndKeyManager.LSP0ERC725Account.address;

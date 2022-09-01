@@ -22,6 +22,8 @@ import TimelockResolver from "../TimelockResolver";
 const Confirmation = ({ daoInfo, actionStep }) => {
   const [alreadyDeployed, setAlreadyDeployed] = useState(false);
 
+  console.log(daoInfo);
+
   const theme = useTheme();
 
   const upStatus = () => {
@@ -78,7 +80,7 @@ const Confirmation = ({ daoInfo, actionStep }) => {
           `}
         >
           <img
-            src={daoInfo.up.cover &&URL.createObjectURL(daoInfo.up.cover)}
+            src={daoInfo.up.cover && URL.createObjectURL(daoInfo.up.cover)}
             css={css`
               width: 100%;
             `}
@@ -187,18 +189,15 @@ const Confirmation = ({ daoInfo, actionStep }) => {
           />
         ) : (
           <>
-            <div>
-              <Typography variant="body2">
-                {daoInfo.governanceToken.name} - $
-                {daoInfo.governanceToken.symbol}
-              </Typography>
-            </div>
             <div css={css``}>
               <Typography variant="body2">
-                supply: {daoInfo.governanceToken.supply}
+                Voting Delay: {daoInfo.governor.votingDelay} blocks
               </Typography>
               <Typography variant="body2">
-                receiver: ${daoInfo.governanceToken.receiver}
+                Voting Period: {daoInfo.governor.votingPeriod} blocks
+              </Typography>
+              <Typography variant="body2">
+                Quorum Numerator: {daoInfo.governor.quorumNumerator}%
               </Typography>
             </div>
           </>

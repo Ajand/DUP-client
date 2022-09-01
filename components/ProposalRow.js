@@ -14,6 +14,7 @@ const ProposalRow = ({ dao, url, id }) => {
   const [loading, setLoading] = useState(true);
   const [proposalInfo, setProposalInfo] = useState([]);
   const [proposalState, setProposalState] = useState();
+  const [proposalId, setProposalId] = useState("");
 
   const router = useRouter();
 
@@ -28,6 +29,7 @@ const ProposalRow = ({ dao, url, id }) => {
           callDatas,
           ethers.utils.keccak256(ethers.utils.toUtf8Bytes(url))
         );
+        setProposalId(proposalId);
         const proposalState = await governor.ethers.state(proposalId);
         setProposalState(proposalState);
         setLoading(false);
@@ -61,10 +63,12 @@ const ProposalRow = ({ dao, url, id }) => {
         }
       `}
       onClick={() => {
+        console.log("here???");
         router.push(`${router.asPath}/p/${url.replace("ipfs://", "")}`);
       }}
     >
       <TableCell align="left">{proposalInfo.name}</TableCell>
+      <TableCell align="center">{String(proposalId)}</TableCell>
       <TableCell align="right">
         {parseProposalState(String(proposalState))}
       </TableCell>
